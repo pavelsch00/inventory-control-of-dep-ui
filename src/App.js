@@ -9,7 +9,14 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <link>https://inventory-control-of-dep.herokuapp.com/WeatherForecast</link>
+        <a
+          className="App-link"
+          href="https://inventory-control-of-dep.herokuapp.com/swagger/index.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Test
+        </a>
         <a
           className="App-link"
           href="https://reactjs.org"
