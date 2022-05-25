@@ -96,7 +96,7 @@ const Register = () => {
           {!successful && (
             <div>
               <div className="form-group">
-                <label htmlFor="username">Username</label>
+                <label htmlFor="username">Имя</label>
                 <Input
                   type="text"
                   className="form-control"
@@ -107,7 +107,7 @@ const Register = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">Электронная почта</label>
                 <Input
                   type="text"
                   className="form-control"
@@ -118,7 +118,7 @@ const Register = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Пароль</label>
                 <Input
                   type="password"
                   className="form-control"
@@ -129,7 +129,7 @@ const Register = () => {
                 />
               </div>
               <div className="form-group">
-                <button className="m-3 btn btn-outline-secondary">Sign Up</button>
+                <button className="m-3 btn btn-outline-secondary">Зарегистрироваться</button>
               </div>
             </div>
           )}

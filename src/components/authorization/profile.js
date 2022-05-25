@@ -6,11 +6,11 @@ const Profile = () => {
     <div className="container">
       <header className="jumbotron">
         <h3>
-          <strong>{currentUser.username}</strong> Profile
+          <strong>{currentUser.username}</strong> Профиль
         </h3>
       </header>
       <p>
-        <strong>Token:</strong> {currentUser.accessToken.substring(0, 20)} ...{" "}
+        <strong>Токен:</strong> {currentUser.accessToken.substring(0, 20)} ...{" "}
         {currentUser.accessToken.substr(currentUser.accessToken.length - 20)}
       </p>
       <p>
@@ -18,9 +18,9 @@ const Profile = () => {
         {console.log(currentUser)}
       </p>
       <p>
-        <strong>Email:</strong> {currentUser.UserName}
+        <strong>Электронная почта:</strong> {currentUser.UserName}
       </p>
-      <strong>Authorities:</strong>
+      <strong>Роль:</strong>
       <ul>
         {currentUser.roles}
       </ul>

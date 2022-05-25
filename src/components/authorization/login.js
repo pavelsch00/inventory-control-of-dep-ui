@@ -66,7 +66,7 @@ const Login = () => {
         />
         <Form onSubmit={handleLogin} ref={form}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Электронная почта</label>
             <Input
               type="text"
               className="form-control"
@@ -77,7 +77,7 @@ const Login = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Пароль</label>
             <Input
               type="password"
               className="form-control"
@@ -92,7 +92,7 @@ const Login = () => {
               {loading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
-              <span>Login</span>
+              <span>Войти</span>
             </button>
           </div>
           {message && (

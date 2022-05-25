@@ -34,6 +34,10 @@ import RoomList from "./components/room/RoomList";
 import Room from "./components/room/Room";
 import AddRoom from "./components/room/AddRoom";
 
+import MaterialValueList from "./components/materialvalue/MaterialValueList";
+import MaterialValue from "./components/materialvalue/MaterialValue";
+import AddMaterialValue from "./components/materialvalue/AddMaterialValue";
+
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -58,13 +62,13 @@ const App = () => {
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={"/home"} className="nav-link">
-              Home
+              Домой
             </Link>
           </li>
           {showModeratorBoard && (
             <li className="nav-item">
               <Link to={"/mod"} className="nav-link">
-                Moderator Board
+                МОЛ
               </Link>
             </li>
           )}
@@ -72,37 +76,42 @@ const App = () => {
                <div className="navbar-nav ml-auto">
                <li className="nav-item">
                  <Link to={"/admin"} className="nav-link">
-                   Admin Board
+                   Администратор
                  </Link>
                </li>
                <li className="nav-item">
                  <Link to={"/department"} className="nav-link">
-                   Department
+                   Специальность
                  </Link>
                </li>
                <li className="nav-item">
                  <Link to={"/faculty"} className="nav-link">
-                   Faculty
+                   Факультет
                  </Link>
                </li>
                <li className="nav-item">
                  <Link to={"/position"} className="nav-link">
-                   Position
+                   Должность
                  </Link>
                </li>
                <li className="nav-item">
                  <Link to={"/category"} className="nav-link">
-                   Сategory
+                   Категория
                  </Link>
                </li>
                <li className="nav-item">
                  <Link to={"/operationsType"} className="nav-link">
-                   Operations Type
+                   Тип операции
                  </Link>
                </li>
                <li className="nav-item">
                  <Link to={"/room"} className="nav-link">
-                   Room
+                   Аудитория
+                 </Link>
+               </li>
+               <li className="nav-item">
+                 <Link to={"/materialvalue"} className="nav-link">
+                   Материальная ценность
                  </Link>
                </li>
              </div>
@@ -110,7 +119,7 @@ const App = () => {
           {currentUser && (
             <li className="nav-item">
               <Link to={"/profile"} className="nav-link">
-                Profile
+                Профиль
               </Link>
             </li>
           )}
@@ -124,7 +133,7 @@ const App = () => {
             </li>
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
-                LogOut
+                Выход
               </a>
             </li>
           </div>
@@ -132,12 +141,12 @@ const App = () => {
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/login"} className="nav-link">
-                Login
+                Войти
               </Link>
             </li>
             <li className="nav-item">
               <Link to={"/register"} className="nav-link">
-                Sign Up
+                Регистрация
               </Link>
             </li>
           </div>
@@ -175,6 +184,10 @@ const App = () => {
         <Route path="/room" element={<RoomList/>} />
         <Route path="/add-room" element={<AddRoom/>} />
         <Route path="/room/:id" element={<Room/>} />
+
+        <Route path="/materialvalue" element={<MaterialValueList/>} />
+        <Route path="/add-materialvalue" element={<AddMaterialValue/>} />
+        <Route path="/materialvalue/:id" element={<MaterialValue/>} />
       </Routes>
       </div>
     </div>
