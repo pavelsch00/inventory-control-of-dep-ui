@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MaterialValueDataService from "../../services/dataService/api-materialvalue-service";
+import RoomDataService from "../../services/dataService/api-room-service";
+import CategoryDataService from "../../services/dataService/api-category-service";
 import { Link } from "react-router-dom";
 
 const MaterialValueList = () => {
@@ -7,19 +9,40 @@ const MaterialValueList = () => {
   const [currentMaterialValue, setCurrentMaterialValue] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [searchId, setSearchName] = useState("");
-  
+  const [currentRoom, setCurrentRoom] = useState(null);
+  const [currentCategory, setCurrentCategory] = useState(null);
+
   useEffect(() => {
     retrieveMaterialValue();
   }, []);
   const onChangeSearchName = e => {
     const searchId = e.target.value;
     setSearchName(searchId);
-    console.log(searchId);
   };
   const retrieveMaterialValue = () => {
     MaterialValueDataService.getAll()
       .then(response => {
         setMaterialValue(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const getRoomById = id  => {
+    RoomDataService.get(id)
+      .then(response => {
+        setCurrentRoom(response.data);
+        console.log(response.data)
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const getCategoryById = id  => {
+    CategoryDataService.get(id)
+      .then(response => {
+        setCurrentCategory(response.data);
+        console.log(response.data)
       })
       .catch(e => {
         console.log(e);
@@ -33,11 +56,12 @@ const MaterialValueList = () => {
   const setActiveMaterialValue = (MaterialValue, index) => {
     setCurrentMaterialValue(MaterialValue);
     setCurrentIndex(index);
+    getRoomById(MaterialValue.roomId);
+    getCategoryById(MaterialValue.categoryId);
   };
   const deleteMaterialValue = () => {
     MaterialValueDataService.remove(currentMaterialValue.id)
       .then(response => {
-        console.log(response.data);
         refreshList();
       })
       .catch(e => {
@@ -87,7 +111,7 @@ const MaterialValueList = () => {
                 onClick={() => setActiveMaterialValue(MaterialValue, index)}
                 key={index}
               >
-                {MaterialValue.name}-{MaterialValue.number}
+                {MaterialValue.inventoryNumber}-{MaterialValue.description}
               </li>
             ))}
         </ul>
@@ -97,7 +121,7 @@ const MaterialValueList = () => {
         </Link>
       </div>
       <div className="col-md-6">
-        {currentMaterialValue ? (
+        {currentMaterialValue && currentRoom && currentCategory ? (
           <div>
             <h4>Материальная ценность</h4>
             <div>
@@ -108,9 +132,57 @@ const MaterialValueList = () => {
             </div>
             <div>
               <label>
-                <strong>Номер:</strong>
+                <strong>Описание:</strong>
               </label>{" "}
-              {currentMaterialValue.number}
+              {currentMaterialValue.description}
+            </div>
+            <div>
+              <label>
+                <strong>Цена:</strong>
+              </label>{" "}
+              {currentMaterialValue.price}
+            </div>
+            <div>
+              <label>
+                <strong>Катигория:</strong>
+              </label>{" "}
+              {currentCategory.name}
+            </div>
+            <div>
+              <label>
+                <strong>Дата списание:</strong>
+              </label>{" "}
+              {currentMaterialValue.writeOffDate}
+            </div>
+            <div>
+              <label>
+                <strong>Заводской номер:</strong>
+              </label>{" "}
+              {currentMaterialValue.factoryNumber}
+            </div>
+            <div>
+              <label>
+                <strong>Инентарный номер:</strong>
+              </label>{" "}
+              {currentMaterialValue.inventoryNumber}
+            </div>
+            <div>
+              <label>
+                <strong>Номенклатурный номер:</strong>
+              </label>{" "}
+              {currentMaterialValue.nomenclatureNumber}
+            </div>
+            <div>
+              <label>
+                <strong>Паспортный номер номер:</strong>
+              </label>{" "}
+              {currentMaterialValue.passportNumber}
+            </div>
+            <div>
+              <label>
+                <strong>Аудитория:</strong>
+              </label>{" "}
+              {currentRoom.name} - {currentRoom.number}
             </div>
             <Link
               to={"/materialvalue/" + currentMaterialValue.id}
