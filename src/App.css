@@ -8,6 +8,10 @@
   width: 300;
   height: 600;
 }
+.list-group-item.active{
+  background-color: gray;
+  border-color: gray;
+}
 .logout{
   position: absolute;
   right: 3%;

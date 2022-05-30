@@ -4,6 +4,14 @@ import RoomDataService from "../../services/dataService/api-room-service";
 import CategoryDataService from "../../services/dataService/api-category-service";
 import { Link } from "react-router-dom";
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 const MaterialValueList = () => {
   const [MaterialValue, setMaterialValue] = useState([]);
   const [currentMaterialValue, setCurrentMaterialValue] = useState(null);
@@ -99,28 +107,47 @@ const MaterialValueList = () => {
           </div>
         </div>
       </div>
-      <div className="col-md-6">
+      <div className="col-md-8">
         <h4>Список материальных ценностей</h4>
-        <ul className="list-group">
-          {MaterialValue &&
-            MaterialValue.map((MaterialValue, index) => (
-              <li
-                className={
-                  "list-group-item " + (index === currentIndex ? "active" : "")
-                }
-                onClick={() => setActiveMaterialValue(MaterialValue, index)}
-                key={index}
-              >
-                {MaterialValue.name}-{MaterialValue.inventoryNumber}
-              </li>
-            ))}
-        </ul>
+        <TableContainer sx={{ width: 650 }} component={Paper}>
+          <Table  aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Название</TableCell>
+                <TableCell>Инвентарный номер</TableCell>
+                <TableCell>Описание</TableCell>
+                <TableCell>Цена</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {MaterialValue &&
+                MaterialValue.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    className={
+                      "list-group-item " + (row.id === currentIndex ? "active" : "")
+                    }
+                    onClick={() => setActiveMaterialValue(row, row.id)}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell>{row.inventoryNumber}</TableCell>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell>{row.price}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
         <Link
           to={"/add-materialvalue"}
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
       </div>
-      <div className="col-md-6">
+      <div className="col-md-4">
         {currentMaterialValue && currentRoom && currentCategory ? (
           <div>
             <h4>Материальная ценность</h4>
@@ -204,4 +231,5 @@ const MaterialValueList = () => {
     </div>
   );
 };
+
 export default MaterialValueList;

@@ -3,8 +3,15 @@ import InventoryBookeDataService from "../../services/dataService/api-inventoryb
 import OperationsTypeDataService from "../../services/dataService/api-operationstype-service";
 import MaterialValueDataService from "../../services/dataService/api-materialvalue-service";
 import UserDataService from "../../services/dataService/api-user-service";
-
 import { Link } from "react-router-dom";
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const InventoryBookeList = () => {
   const [InventoryBooke, setInventoryBooke] = useState([]);
@@ -115,29 +122,46 @@ const InventoryBookeList = () => {
           </div>
         </div>
       </div>
-      <div className="col-md-6">
+      <div className="col-md-8">
         <h2>Инвентарная книга</h2>
         <h4>Список материальных ценностей</h4>
-        <ul className="list-group">
-          {InventoryBooke &&
-            InventoryBooke.map((InventoryBooke, index) => (
-              <li
-                className={
-                  "list-group-item " + (index === currentIndex ? "active" : "")
-                }
-                onClick={() => setActiveInventoryBooke(InventoryBooke, index)}
-                key={index}
-              >
-                {InventoryBooke.materialValueName} {InventoryBooke.materialValuInventoryNumber} {InventoryBooke.operationTypeName} {InventoryBooke.date}
-              </li>
-            ))}
-        </ul>
+        <TableContainer sx={{ width: 650 }} component={Paper}>
+          <Table  aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Название</TableCell>
+                <TableCell>Инвентарный номер</TableCell>
+                <TableCell>Тип операции</TableCell>
+                <TableCell>Дата</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {InventoryBooke &&
+                InventoryBooke.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    className={
+                      "list-group-item " + (row.id === currentIndex ? "active" : "")
+                    }
+                    onClick={() => setActiveInventoryBooke(row, row.id)}
+                  >
+                    <TableCell component="th" scope="row">{row.materialValueName}</TableCell>
+                    <TableCell>{row.materialValuInventoryNumber}</TableCell>
+                    <TableCell>{row.operationTypeName}</TableCell>
+                    <TableCell>{row.date}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
         <Link
           to={"/add-inventorybook"}
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
       </div>
-      <div className="col-md-6">
+      <div className="col-md-4">
         {currentInventoryBooke && currentOperationsType && currentMaterialValue && currentUser ? (
           <div>
             <h4>Инвентарная книга</h4>
@@ -191,4 +215,17 @@ const InventoryBookeList = () => {
     </div>
   );
 };
+
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+  
+  const rows = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9),
+  ];
+
 export default InventoryBookeList;
