@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
 import MaterialValueDataService from "../../services/dataService/api-materialvalue-service";
-import { useNavigate } from 'react-router-dom';
 import RoomDataService from "../../services/dataService/api-room-service";
 import CategoryDataService from "../../services/dataService/api-category-service";
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -18,13 +18,13 @@ const required = (value) => {
   }
 };
 
-const AddMaterialValue = () => {
+const MaterialValue = props => {
+  const { id }= useParams();
   let navigate = useNavigate();
   const form = useRef();
   const checkBtn = useRef();
 
   const initialMaterialValueState = {
-    id: 0,
     categoryId: 0,
     name: "",
     dateOfIssue: "",
@@ -37,44 +37,68 @@ const AddMaterialValue = () => {
     roomId: 0,
     writeOffDate: "",
   };
-  const [MaterialValue, setMaterialValue] = useState(initialMaterialValueState);
-  const [categoryList, setCategoryList] = useState([]);
+  const [currentMaterialValue, setCurrentMaterialValue] = useState(initialMaterialValueState);
+  const [message, setMessage] = useState("");
   const [roomList, setRoomList] = useState([]);
-
-
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [categoryList, setCategoryList] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const [message, setMessage] = useState("");
-
+  const getMaterialValue = id => {
+    MaterialValueDataService.get(id)
+      .then(response => {
+        setCurrentMaterialValue(response.data);
+        getRoomById(response.data.roomId);
+        getRoomList();
+        getCategoryById(response.data.categoryId);
+        getCategoryList();
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   useEffect(() => {
-    getRoomList();
-    getCategoryList();
-
-    if(categoryList.length !== 0 && roomList.length !== 0 ) {
-      console.log(categoryList[0].id);
-
-      setCategory(categoryList[0].id);
-      setRoom(roomList[0].id);
-    }
-
-  }, [categoryList.length, roomList.length]);
-
+    if (id)
+      getMaterialValue(id);
+  }, [id]);
+  
   const handleInputChange = event => {
     const { name, value } = event.target;
-    setMaterialValue({ ...MaterialValue, [name]: value });
-  };
-  const setCategory = id => {
-    setSelectedCategory(categoryList.find(x => x.id === parseInt(id)));
-  };
-  const setRoom = id => {
-    setSelectedRoom(roomList.find(x => x.id === parseInt(id)));
+
+    setCurrentMaterialValue({ ...currentMaterialValue, [name]: value });
   };
 
+  const setRoom = id => {
+    setSelectedRoom(roomList.find(x => x.id === parseInt(id)));
+
+    currentMaterialValue.roomId = parseInt(selectedRoom.id);
+  };
+  const getRoomById = id  => {
+    RoomDataService.get(id)
+      .then(response => {
+        setSelectedRoom(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   const getRoomList = ()  => {
     RoomDataService.getAll()
       .then(response => {
         setRoomList(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  const setCategory = id => {
+    setSelectedCategory(categoryList.find(x => x.id === parseInt(id)));
+  };
+  const getCategoryById = id  => {
+    CategoryDataService.get(id)
+      .then(response => {
+        setSelectedCategory(response.data);
       })
       .catch(e => {
         console.log(e);
@@ -90,49 +114,49 @@ const AddMaterialValue = () => {
       });
   };
 
-  const saveMaterialValue = () => {
+  const updateMaterialValue = () => {
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
     setMessage("Пожалуйста подождите");
     var data = {
       categoryId: selectedCategory.id,
-      dateOfIssue: MaterialValue.dateOfIssue,
-      description: MaterialValue.description,
-      factoryNumber: MaterialValue.factoryNumber,
-      inventoryNumber: MaterialValue.inventoryNumber,
-      nomenclatureNumber: MaterialValue.nomenclatureNumber,
-      passportNumber: MaterialValue.passportNumber,
-      price: MaterialValue.price,
+      dateOfIssue: currentMaterialValue.dateOfIssue,
+      description: currentMaterialValue.description,
+      factoryNumber: currentMaterialValue.factoryNumber,
+      inventoryNumber: currentMaterialValue.inventoryNumber,
+      nomenclatureNumber: currentMaterialValue.nomenclatureNumber,
+      passportNumber: currentMaterialValue.passportNumber,
+      price: currentMaterialValue.price,
       roomId: selectedRoom.id,
-      writeOffDate: MaterialValue.writeOffDate,
-      name: MaterialValue.name
+      writeOffDate: currentMaterialValue.writeOffDate,
+      name: currentMaterialValue.name
     };
-    MaterialValueDataService.create(data)
-      .then(response => {
 
-        console.log(response.data);
-        setMessage("Создание прошло успешно");
+    MaterialValueDataService.update(currentMaterialValue.id, data)
+      .then(response => {
+        setMessage("Обновление прошло успешно");
       })
       .catch(e => {
         console.log(e);
       });
-  }};
+    };
+  };
   const goBack = () => {
     navigate("/materialvalue");
   };
   return (
     <div>
-      { selectedCategory && selectedRoom ? (
+      {currentMaterialValue && selectedRoom && selectedCategory ? (
         <div className="edit-form">
-          <h4>Материальная ценность</h4>
-          <Form ref={form} onSubmit={saveMaterialValue}>
+          <h4>Инвентарная книга</h4>
+          <Form ref={form} onSubmit={updateMaterialValue}>
           <div className="form-group">
               <label htmlFor="name">Название</label>
               <Input
                 type="text"
                 className="form-control"
                 name="name"
-                value={MaterialValue.name}
+                value={currentMaterialValue.name}
                 onChange={handleInputChange}
                 validations={[required]}
               />
@@ -143,7 +167,7 @@ const AddMaterialValue = () => {
                 type="text"
                 className="form-control"
                 name="description"
-                value={MaterialValue.description}
+                value={currentMaterialValue.description}
                 onChange={handleInputChange}
                 validations={[required]}
               />
@@ -155,7 +179,7 @@ const AddMaterialValue = () => {
                 className="form-control"
                 id="price"
                 name="price"
-                value={MaterialValue.price}
+                value={currentMaterialValue.price}
                 onChange={handleInputChange}
                 validations={[required]}
               />
@@ -191,11 +215,11 @@ const AddMaterialValue = () => {
             <div className="form-group">
               <label htmlFor="dateOfIssue">Дата создания</label>
               <Input
-                type="datetime-local"
+                type="datetime"
                 className="form-control"
                 id="dateOfIssue"
                 name="dateOfIssue"
-                value={MaterialValue.dateOfIssue}
+                value={currentMaterialValue.dateOfIssue}
                 onChange={handleInputChange}
                 validations={[required]}
               />
@@ -203,11 +227,11 @@ const AddMaterialValue = () => {
             <div className="form-group">
               <label htmlFor="writeOffDate">Дата списание</label>
               <Input
-                type="datetime-local"
+                type="datetime"
                 className="form-control"
                 id="writeOffDate"
                 name="writeOffDate"
-                value={MaterialValue.writeOffDate}
+                value={currentMaterialValue.writeOffDate}
                 onChange={handleInputChange}
                 validations={[required]}
               />
@@ -219,7 +243,7 @@ const AddMaterialValue = () => {
                 className="form-control"
                 id="factoryNumber"
                 name="factoryNumber"
-                value={MaterialValue.factoryNumber}
+                value={currentMaterialValue.factoryNumber}
                 onChange={handleInputChange}
               />
             </div>
@@ -230,7 +254,7 @@ const AddMaterialValue = () => {
                 className="form-control"
                 id="inventoryNumber"
                 name="inventoryNumber"
-                value={MaterialValue.inventoryNumber}
+                value={currentMaterialValue.inventoryNumber}
                 onChange={handleInputChange}
               />
             </div>
@@ -241,7 +265,7 @@ const AddMaterialValue = () => {
                 className="form-control"
                 id="nomenclatureNumber"
                 name="nomenclatureNumber"
-                value={MaterialValue.nomenclatureNumber}
+                value={currentMaterialValue.nomenclatureNumber}
                 onChange={handleInputChange}
               />
             </div>
@@ -252,7 +276,7 @@ const AddMaterialValue = () => {
                 className="form-control"
                 id="passportNumber"
                 name="passportNumber"
-                value={MaterialValue.passportNumber}
+                value={currentMaterialValue.passportNumber}
                 onChange={handleInputChange}
               />
             </div>
@@ -264,7 +288,7 @@ const AddMaterialValue = () => {
           <button
             type="submit"
             className="m-3 btn btn-outline-secondary"
-            onClick={saveMaterialValue}
+            onClick={updateMaterialValue}
           >
             Обновить
           </button>
@@ -280,5 +304,4 @@ const AddMaterialValue = () => {
     </div>
   );
 };
-
-export default AddMaterialValue;
+export default MaterialValue;

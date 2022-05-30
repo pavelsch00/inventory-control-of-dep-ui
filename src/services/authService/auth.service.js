@@ -16,7 +16,6 @@ class AuthService {
             var roles = Object.entries(user);
             user.roles = roles[5][1];
             user.accessToken = response.data;
-            console.log(user);
           localStorage.setItem("user", JSON.stringify(user));
         }
         return response.data;

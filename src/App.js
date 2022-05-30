@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+
 import AuthService from "./services/authService/auth.service";
 import Login from "./components/authorization/login";
 import Register from "./components/authorization/register";
@@ -38,6 +39,10 @@ import MaterialValueList from "./components/materialvalue/MaterialValueList";
 import MaterialValue from "./components/materialvalue/MaterialValue";
 import AddMaterialValue from "./components/materialvalue/AddMaterialValue";
 
+import InventoryBookList from "./components/inventorybook/InventoryBookList";
+import InventoryBook from "./components/inventorybook/InventoryBook";
+import AddInventoryBook from "./components/inventorybook/AddInventoryBook";
+
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -60,25 +65,22 @@ const App = () => {
           Учет
         </Link>
         <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Домой
-            </Link>
-          </li>
           {showModeratorBoard && (
-            <li className="nav-item">
-              <Link to={"/mod"} className="nav-link">
-                МОЛ
-              </Link>
-            </li>
+               <div className="navbar-nav ml-auto">
+               <li className="nav-item">
+                 <Link to={"/materialvalue"} className="nav-link">
+                   Материальная ценность
+                 </Link>
+               </li>
+               <li className="nav-item">
+                 <Link to={"/inventorybook"} className="nav-link">
+                   Инвентарная книга
+                 </Link>
+               </li>
+             </div>
           )}
           {showAdminBoard && (
                <div className="navbar-nav ml-auto">
-               <li className="nav-item">
-                 <Link to={"/admin"} className="nav-link">
-                   Администратор
-                 </Link>
-               </li>
                <li className="nav-item">
                  <Link to={"/department"} className="nav-link">
                    Специальность
@@ -114,6 +116,11 @@ const App = () => {
                    Материальная ценность
                  </Link>
                </li>
+               <li className="nav-item">
+                 <Link to={"/inventorybook"} className="nav-link">
+                   Инвентарная книга
+                 </Link>
+               </li>
              </div>
           )}
           {currentUser && (
@@ -132,23 +139,14 @@ const App = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={logOut}>
+              <a href="/login" className="nav-link logout" onClick={logOut}>
                 Выход
               </a>
             </li>
           </div>
         ) : (
           <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/login"} className="nav-link">
-                Войти
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/register"} className="nav-link">
-                Регистрация
-              </Link>
-            </li>
+
           </div>
         )}
       </nav>
@@ -188,6 +186,10 @@ const App = () => {
         <Route path="/materialvalue" element={<MaterialValueList/>} />
         <Route path="/add-materialvalue" element={<AddMaterialValue/>} />
         <Route path="/materialvalue/:id" element={<MaterialValue/>} />
+
+        <Route path="/inventorybook" element={<InventoryBookList/>} />
+        <Route path="/add-inventorybook" element={<AddInventoryBook/>} />
+        <Route path="/inventorybook/:id" element={<InventoryBook/>} />
       </Routes>
       </div>
     </div>

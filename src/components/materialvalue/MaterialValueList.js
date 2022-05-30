@@ -79,7 +79,7 @@ const MaterialValueList = () => {
   };
   return (
     <div className="list row">
-      <div className="col-md-8">
+      <div className="col-md-12">
         <div className="input-group mb-3">
           <input
             type="text"
@@ -111,7 +111,7 @@ const MaterialValueList = () => {
                 onClick={() => setActiveMaterialValue(MaterialValue, index)}
                 key={index}
               >
-                {MaterialValue.inventoryNumber}-{MaterialValue.description}
+                {MaterialValue.name}-{MaterialValue.inventoryNumber}
               </li>
             ))}
         </ul>

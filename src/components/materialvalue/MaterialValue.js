@@ -26,6 +26,7 @@ const MaterialValue = props => {
 
   const initialMaterialValueState = {
     categoryId: 0,
+    name: "",
     dateOfIssue: "",
     description: "",
     factoryNumber: "",
@@ -128,6 +129,7 @@ const MaterialValue = props => {
       price: currentMaterialValue.price,
       roomId: selectedRoom.id,
       writeOffDate: currentMaterialValue.writeOffDate,
+      name: currentMaterialValue.name
     };
 
     MaterialValueDataService.update(currentMaterialValue.id, data)
@@ -146,10 +148,21 @@ const MaterialValue = props => {
     <div>
       {currentMaterialValue && selectedRoom && selectedCategory ? (
         <div className="edit-form">
-          <h4>Аудитория</h4>
+          <h4>Материальная ценность</h4>
           <Form ref={form} onSubmit={updateMaterialValue}>
+          <div className="form-group">
+              <label htmlFor="name">Название</label>
+              <Input
+                type="text"
+                className="form-control"
+                name="name"
+                value={currentMaterialValue.name}
+                onChange={handleInputChange}
+                validations={[required]}
+              />
+            </div>
             <div className="form-group">
-              <label htmlFor="description">Название</label>
+              <label htmlFor="description">Описание</label>
               <Input
                 type="text"
                 className="form-control"
