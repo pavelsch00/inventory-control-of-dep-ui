@@ -266,7 +266,7 @@ const AddMaterialValue = () => {
             className="m-3 btn btn-outline-secondary"
             onClick={saveMaterialValue}
           >
-            Обновить
+            Создать
           </button>
           
           <p>{message}</p>

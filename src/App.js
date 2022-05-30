@@ -43,9 +43,14 @@ import InventoryBookList from "./components/inventorybook/InventoryBookList";
 import InventoryBook from "./components/inventorybook/InventoryBook";
 import AddInventoryBook from "./components/inventorybook/AddInventoryBook";
 
+import AprovalList from "./components/aproval/AprovalList";
+
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const [showDepHeadBoard, setDepHeadBoard] = useState(false);
+  const [showPurchaseDepartmentBoard, setPurchaseDepartmentBoard] = useState(false);
+  
   const [currentUser, setCurrentUser] = useState(undefined);
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -53,6 +58,8 @@ const App = () => {
       setCurrentUser(user);
       setShowModeratorBoard(user.roles.includes("MaterialPerson"));
       setShowAdminBoard(user.roles.includes("Admin"));
+      setPurchaseDepartmentBoard(user.roles.includes("PurchaseDepartment"));
+      setDepHeadBoard(user.roles.includes("DepHead"));
     }
   }, []);
   const logOut = () => {
@@ -65,6 +72,34 @@ const App = () => {
           Учет
         </Link>
         <div className="navbar-nav mr-auto">
+        {showDepHeadBoard && (
+               <div className="navbar-nav ml-auto">
+               <li className="nav-item">
+                 <Link to={"/materialvalue"} className="nav-link">
+                   Материальная ценность
+                 </Link>
+               </li>
+               <li className="nav-item">
+                 <Link to={"/aproval"} className="nav-link">
+                   Запрос на подтверждние
+                 </Link>
+               </li>
+             </div>
+          )}
+        {showPurchaseDepartmentBoard && (
+               <div className="navbar-nav ml-auto">
+               <li className="nav-item">
+                 <Link to={"/inventorybook"} className="nav-link">
+                   Инвентарная книга
+                 </Link>
+               </li>
+               <li className="nav-item">
+                 <Link to={"/aproval"} className="nav-link">
+                   Запрос на подтверждние
+                 </Link>
+               </li>
+             </div>
+          )}
           {showModeratorBoard && (
                <div className="navbar-nav ml-auto">
                <li className="nav-item">
@@ -75,6 +110,11 @@ const App = () => {
                <li className="nav-item">
                  <Link to={"/inventorybook"} className="nav-link">
                    Инвентарная книга
+                 </Link>
+               </li>
+               <li className="nav-item">
+                 <Link to={"/aproval"} className="nav-link">
+                   Запрос на подтверждние
                  </Link>
                </li>
              </div>
@@ -190,6 +230,8 @@ const App = () => {
         <Route path="/inventorybook" element={<InventoryBookList/>} />
         <Route path="/add-inventorybook" element={<AddInventoryBook/>} />
         <Route path="/inventorybook/:id" element={<InventoryBook/>} />
+
+        <Route path="/aproval" element={<AprovalList/>} />
       </Routes>
       </div>
     </div>

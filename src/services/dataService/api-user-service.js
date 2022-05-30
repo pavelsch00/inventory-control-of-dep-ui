@@ -26,7 +26,7 @@ const remove = email => {
 const deleterole = (email, data) => {
     return http.delete(`/${controllerName}/${email}/deleterole`, data);
   };
-const RoomService = {
+const UserService = {
   getAll,
   getById,
   changepassword,
@@ -37,4 +37,4 @@ const RoomService = {
   deleterole
 };
 
-export default RoomService;
+export default UserService;

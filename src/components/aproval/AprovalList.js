@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import InventoryBookeDataService from "../../services/dataService/api-inventorybook-service";
-import OperationsTypeDataService from "../../services/dataService/api-operationstype-service";
-import MaterialValueDataService from "../../services/dataService/api-materialvalue-service";
+import AprovarDataService from "../../services/dataService/api-aprovar-service";
+import InventoryBookDataService from "../../services/dataService/api-inventorybook-service";
 import UserDataService from "../../services/dataService/api-user-service";
 import { Link } from "react-router-dom";
 import AuthService from "../../services/authService/auth.service";
-import AprovarDataService from "../../services/dataService/api-aprovar-service";
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,24 +13,24 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-const InventoryBookeList = () => {
+const AprovarList = () => {
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
-  const [InventoryBooke, setInventoryBooke] = useState([]);
-  const [currentInventoryBooke, setCurrentInventoryBooke] = useState(null);
+  const [Aprovar, setAprovar] = useState([]);
+  const [currentAprovar, setCurrentAprovar] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [searchId, setSearchName] = useState("");
-  const [currentOperationsType, setCurrentOperationsType] = useState(null);
-  const [currentMaterialValue, setCurrentMaterialValue] = useState(null);
+  const [currentInventoryBook, setCurrentInventoryBook] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isAprove, setIsAprove] = useState(false);
   const [isAllAprove, setAllAprove] = useState(false);
-
+  
   useEffect(() => {
-    retrieveInventoryBooke();
     const user = AuthService.getCurrentUser();
+    retrieveAprovar(user.UserId);
     setMaterialPersonBoard(user.roles.includes("MaterialPerson"));
-  }, []);
-  const getIsAllAproveById = (id)  => {
-    AprovarDataService.getById(id)
+  }, [currentAprovar]);
+  const getIsAllAproveById = ()  => {
+    AprovarDataService.getById(currentInventoryBook.id)
       .then(response => {
         setAllAprove(response.data);
         console.log(response.data)
@@ -41,33 +39,31 @@ const InventoryBookeList = () => {
         console.log(e);
       });
   };
+  const onChangeTrue = () => {
+    setIsAprove(true);
+    updateMaterialValue();
+  };
+  const onChangeFalse = () => {
+    setIsAprove(false);
+    updateMaterialValue();
+  };
   const onChangeSearchName = e => {
     const searchId = e.target.value;
     setSearchName(searchId);
   };
-  const retrieveInventoryBooke = () => {
-    InventoryBookeDataService.getAll()
+  const retrieveAprovar = (userId) => {
+    AprovarDataService.getAll(userId)
       .then(response => {
-        setInventoryBooke(response.data);
+        setAprovar(response.data);
       })
       .catch(e => {
         console.log(e);
       });
   };
-  const getOperationsTypeById = id  => {
-    OperationsTypeDataService.get(id)
+  const getInventoryBookById = id  => {
+    InventoryBookDataService.get(id)
       .then(response => {
-        setCurrentOperationsType(response.data);
-        console.log(response.data)
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-  const getMaterialValueById = id  => {
-    MaterialValueDataService.get(id)
-      .then(response => {
-        setCurrentMaterialValue(response.data);
+        setCurrentInventoryBook(response.data);
         console.log(response.data)
       })
       .catch(e => {
@@ -86,32 +82,36 @@ const InventoryBookeList = () => {
   };
 
   const refreshList = () => {
-    retrieveInventoryBooke();
-    setCurrentInventoryBooke(null);
+    retrieveAprovar();
+    setCurrentAprovar(null);
     setCurrentIndex(-1);
   };
-  const setActiveInventoryBooke = (InventoryBooke, index) => {
-    setCurrentInventoryBooke(InventoryBooke);
+  const setActiveAprovar = (Aprovar, index) => {
+    setCurrentAprovar(Aprovar);
     setCurrentIndex(index);
-    getOperationsTypeById(InventoryBooke.operationTypeId);
-    getMaterialValueById(InventoryBooke.materialValueId);
-    getIsAllAproveById(InventoryBooke.id);
-    getUserById(InventoryBooke.userId);
-    console.log(InventoryBooke);
+    getInventoryBookById(Aprovar.inventoryBookId);
+    getIsAllAproveById(Aprovar.userId);
+    getUserById(Aprovar.userId);
+    console.log(Aprovar);
   };
-  const deleteInventoryBooke = () => {
-    InventoryBookeDataService.remove(currentInventoryBooke.id)
+  const updateMaterialValue = () => {
+    var data = {
+        inventoryBookId: currentAprovar.inventoryBookId,
+        userId: currentAprovar.userId,
+        isAprove: isAprove
+    };
+
+    AprovarDataService.update(currentAprovar.id, data)
       .then(response => {
-        refreshList();
       })
       .catch(e => {
         console.log(e);
       });
   };
   const findById = () => {
-      InventoryBookeDataService.getAll()
+      AprovarDataService.getAll()
       .then(response => {
-        setInventoryBooke(response.data.filter(x => x.name.includes(searchId)));
+        setAprovar(response.data.filter(x => x.name.includes(searchId)));
       })
       .catch(e => {
         console.log(e);
@@ -140,33 +140,27 @@ const InventoryBookeList = () => {
         </div>
       </div>
       <div className="col-md-8">
-        <h2>Инвентарная книга</h2>
+        <h2>Запрос на подтверждние</h2>
         <h4>Список материальных ценностей</h4>
         <TableContainer sx={{ width: 650 }} component={Paper}>
           <Table  aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Название</TableCell>
-                <TableCell>Инвентарный номер</TableCell>
-                <TableCell>Тип операции</TableCell>
-                <TableCell>Дата</TableCell>
+                <TableCell>Состояние</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-            {InventoryBooke &&
-                InventoryBooke.map((row) => (
+            {Aprovar &&
+                Aprovar.map((row) => (
                   <TableRow
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     className={
                       "list-group-item " + (row.id === currentIndex ? "active" : "")
                     }
-                    onClick={() => setActiveInventoryBooke(row, row.id)}
+                    onClick={() => setActiveAprovar(row, row.id)}
                   >
-                    <TableCell component="th" scope="row">{row.materialValueName}</TableCell>
-                    <TableCell>{row.materialValuInventoryNumber}</TableCell>
-                    <TableCell>{row.operationTypeName}</TableCell>
-                    <TableCell>{row.date}</TableCell>
+                    <TableCell component="th" scope="row">{row.isAprove === true ? "Одобрено" : "Не одобренно"}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -174,67 +168,52 @@ const InventoryBookeList = () => {
         </TableContainer>
 
         <Link
-          to={"/add-inventorybook"}
+          to={"/add-aprovar"}
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
       </div>
       <div className="col-md-4">
-        {currentInventoryBooke && currentOperationsType && currentMaterialValue && currentUser ? (
+        {currentAprovar && currentInventoryBook && currentUser ? (
           <div>
             <h4>Инвентарная книга</h4>
             <div>
               <label>
                 <strong>Материальная ценность:</strong>
               </label>{" "}
-              {currentMaterialValue.name}
+              {currentInventoryBook.materialValueName}
             </div>
             <div>
               <label>
                 <strong>Тип операции:</strong>
               </label>{" "}
-              {currentOperationsType.name}
+              {currentInventoryBook.operationTypeName}
             </div>
             <div>
               <label>
-                <strong>Комментарий:</strong>
+                <strong>Описание:</strong>
               </label>{" "}
-              {currentInventoryBooke.comment}
+              {currentInventoryBook.comment}
             </div>
             <div>
               <label>
                 <strong>Дата:</strong>
               </label>{" "}
-              {currentInventoryBooke.date}
+              {currentInventoryBook.date}
             </div>
             <div>
               <label>
                 <strong>Сотрудник:</strong>
               </label>{" "}
               {currentUser.name} {currentUser.surname} {currentUser.lastName} 
-            </div>
+            </div>  
+            {!showMaterialPersonBoard && (
             <div>
-              <label>
-                <strong>Статус одобрения:</strong>
-              </label>{" "}
-              {isAllAprove.isAprove === true ? "Одобрено" : "Не одобренно" }
-            </div>
-            {showMaterialPersonBoard && (
-            <div>
-            <Link
-              to={"/inventorybook/" + currentInventoryBooke.materialValueId}
-              className="m-3 btn btn-outline-secondary"
-            >
-              Редактировать
-            </Link>
-            <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
-              Удалить
-            </button>
-
-            {isAllAprove.isAprove && (
-                <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
-                  Сгенерировать акт {currentOperationsType.name}
-                </button> 
-            )}
+                <button className="m-3 btn btn-outline-secondary" onClick={onChangeTrue}>
+                  Одобрить
+                </button>
+                <button className="m-3 btn btn-outline-secondary" onClick={onChangeFalse}>
+                  Отклонить
+                </button>
             </div>)}
           </div>
         ) : (
@@ -248,4 +227,4 @@ const InventoryBookeList = () => {
   );
 };
 
-export default InventoryBookeList;
+export default AprovarList;

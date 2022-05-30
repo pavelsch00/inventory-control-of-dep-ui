@@ -3,6 +3,7 @@ import MaterialValueDataService from "../../services/dataService/api-materialval
 import RoomDataService from "../../services/dataService/api-room-service";
 import CategoryDataService from "../../services/dataService/api-category-service";
 import { Link } from "react-router-dom";
+import AuthService from "../../services/authService/auth.service";
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,6 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 const MaterialValueList = () => {
+  const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
   const [MaterialValue, setMaterialValue] = useState([]);
   const [currentMaterialValue, setCurrentMaterialValue] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -22,6 +24,8 @@ const MaterialValueList = () => {
 
   useEffect(() => {
     retrieveMaterialValue();
+    const user = AuthService.getCurrentUser();
+    setMaterialPersonBoard(user.roles.includes("MaterialPerson"));
   }, []);
   const onChangeSearchName = e => {
     const searchId = e.target.value;
@@ -211,7 +215,7 @@ const MaterialValueList = () => {
               </label>{" "}
               {currentRoom.name} - {currentRoom.number}
             </div>
-            <Link
+            {showMaterialPersonBoard && (<div><Link 
               to={"/materialvalue/" + currentMaterialValue.id}
               className="m-3 btn btn-outline-secondary"
             >
@@ -219,7 +223,7 @@ const MaterialValueList = () => {
             </Link>
             <button className="m-3 btn btn-outline-secondary" onClick={deleteMaterialValue}>
               Удалить
-            </button>
+            </button></div>)}
           </div>
         ) : (
           <div>
