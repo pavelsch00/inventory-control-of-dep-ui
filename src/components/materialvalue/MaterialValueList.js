@@ -12,6 +12,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const MaterialValueList = () => {
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
@@ -22,6 +24,17 @@ const MaterialValueList = () => {
   const [currentRoom, setCurrentRoom] = useState(null);
   const [currentCategory, setCurrentCategory] = useState(null);
 
+  const [filter, setFilter] = useState("name");
+  const [filterName, setFilterName] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
   useEffect(() => {
     retrieveMaterialValue();
     const user = AuthService.getCurrentUser();
@@ -83,7 +96,11 @@ const MaterialValueList = () => {
   const findById = () => {
       MaterialValueDataService.getAll()
       .then(response => {
-        setMaterialValue(response.data.filter(x => x.name.includes(searchId)));
+        if(searchId === ""){
+          setMaterialValue(response.data);
+        }else{
+          setMaterialValue(response.data.filter(x =>isNaN(x[filter]) ? x[filter].includes(searchId) : x[filter] == searchId));
+        }
       })
       .catch(e => {
         console.log(e);
@@ -100,6 +117,40 @@ const MaterialValueList = () => {
             value={searchId}
             onChange={onChangeSearchName}
           />
+          <button
+              className="searchButton btn btn-outline-secondary"
+              onClick={handleClick}
+            >
+              {filterName ? filterName : "Выберите фильтер"}
+            </button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              pageSize={5}
+        rowsPerPageOptions={[5]}
+        checkboxSelection
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={() => {
+                setFilter("name");
+                setFilterName("Название");
+                handleClose();
+                }}>Название</MenuItem>
+              <MenuItem onClick={() => {
+                setFilter("inventoryNumber");
+                setFilterName("Инвентарный номер");
+                handleClose();
+                }}>Инвентарный номер</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("price");
+                setFilterName("Цена");
+                handleClose();
+                }}>Цена</MenuItem>
+            </Menu>
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"

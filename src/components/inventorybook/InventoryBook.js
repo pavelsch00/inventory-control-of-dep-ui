@@ -142,7 +142,7 @@ const MaterialValue = props => {
     };
   };
   const goBack = () => {
-    navigate("/materialvalue");
+    navigate("/Inventorybook");
   };
   return (
     <div>

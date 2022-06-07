@@ -1,8 +1,11 @@
 
 .list {
   text-align: left;
-  max-width: 80%;
+  max-width: 100%;
   margin: auto;
+}
+.searchButton{
+  width: 190px;
 }
 .profile{
   width: 300;

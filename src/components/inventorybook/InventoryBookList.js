@@ -14,8 +14,17 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Switch from '@mui/material/Switch';
 
 const InventoryBookeList = () => {
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
   const [InventoryBooke, setInventoryBooke] = useState([]);
   const [currentInventoryBooke, setCurrentInventoryBooke] = useState(null);
@@ -26,11 +35,37 @@ const InventoryBookeList = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAllAprove, setAllAprove] = useState(false);
 
+  const [filter, setFilter] = useState("materialValueName");
+  const [filterName, setFilterName] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    InventoryBookeDataService.getAll()
+    .then(response => {
+      if(checked){
+        setInventoryBooke(response.data.filter(x => x["operationTypeName"].includes("Закупка")));
+      }else{
+        setInventoryBooke(response.data);
+      }
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }, [checked]);
+
   useEffect(() => {
     retrieveInventoryBooke();
     const user = AuthService.getCurrentUser();
     setMaterialPersonBoard(user.roles.includes("MaterialPerson"));
   }, []);
+
   const getIsAllAproveById = (id)  => {
     AprovarDataService.getById(id)
       .then(response => {
@@ -97,7 +132,6 @@ const InventoryBookeList = () => {
     getMaterialValueById(InventoryBooke.materialValueId);
     getIsAllAproveById(InventoryBooke.id);
     getUserById(InventoryBooke.userId);
-    console.log(InventoryBooke);
   };
   const deleteInventoryBooke = () => {
     InventoryBookeDataService.remove(currentInventoryBooke.id)
@@ -111,23 +145,81 @@ const InventoryBookeList = () => {
   const findById = () => {
       InventoryBookeDataService.getAll()
       .then(response => {
-        setInventoryBooke(response.data.filter(x => x.name.includes(searchId)));
+        const data = response.data.filter(x => x["operationTypeName"].includes("Закупка"));
+        if(checked){
+          setInventoryBooke(data.filter(x => x[filter].includes(searchId)));
+        }else{
+          setInventoryBooke(response.data.filter(x => x[filter].includes(searchId)));
+        } 
       })
       .catch(e => {
         console.log(e);
       });
   };
   return (
-    <div className="list row">
-      <div className="col-md-12">
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Поиск по названию"
-            value={searchId}
-            onChange={onChangeSearchName}
-          />
+          <div className="list row">
+            <div className="col-md-12">
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Выберите фильтр и введите данные для поиска"
+                  value={searchId}
+                  onChange={onChangeSearchName}
+                />
+              <div>
+            <button
+              className="searchButton btn btn-outline-secondary"
+              onClick={handleClick}
+            >
+              {filterName ? filterName : "Выберите фильтер"}
+            </button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={() => {
+                setFilter("materialValueName");
+                setFilterName("Название");
+                handleClose();
+                }}>Название</MenuItem>
+              <MenuItem onClick={() => {
+                setFilter("materialValuInventoryNumber");
+                setFilterName("Инвентарный номер");
+                handleClose();
+                }}>Инвентарный номер</MenuItem>
+              <MenuItem onClick={() => {
+                setFilter("operationTypeName");
+                setFilterName("Тип операции");
+                handleClose();
+                }}>Тип операции</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("date");
+                setFilterName("Дата закупки");
+                handleClose();
+                }}>Дата закупки</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("categoryName");
+                setFilterName("Категория");
+                handleClose();
+                }}>Категория</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("roomNumber");
+                setFilterName("Аудитория");
+                handleClose();
+                }}>Аудитория</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("nomenclatureNumber");
+                setFilterName("Нуменлатурный номер");
+                handleClose();
+                }}>Нуменлатурный номер</MenuItem>
+            </Menu>
+          </div>
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
@@ -139,17 +231,30 @@ const InventoryBookeList = () => {
           </div>
         </div>
       </div>
+      <div className="col-md-12">
+      <label>
+        Скрыть списанные:
+      </label>
+      <Switch
+      checked={checked}
+      onChange={handleChange}
+      inputProps={{ 'aria-label': 'controlled' }}
+    />
+      </div>
       <div className="col-md-8">
         <h2>Инвентарная книга</h2>
         <h4>Список материальных ценностей</h4>
-        <TableContainer sx={{ width: 650 }} component={Paper}>
+        <TableContainer sx={{ width: 850 }} component={Paper}>
           <Table  aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Название</TableCell>
-                <TableCell>Инвентарный номер</TableCell>
+                <TableCell>Категория</TableCell>
                 <TableCell>Тип операции</TableCell>
+                <TableCell>Номер аудитории</TableCell>
                 <TableCell>Дата</TableCell>
+                <TableCell>Инвентарный номер</TableCell>
+                <TableCell>Нуменлатурный номер</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -164,9 +269,12 @@ const InventoryBookeList = () => {
                     onClick={() => setActiveInventoryBooke(row, row.id)}
                   >
                     <TableCell component="th" scope="row">{row.materialValueName}</TableCell>
-                    <TableCell>{row.materialValuInventoryNumber}</TableCell>
+                    <TableCell>{row.categoryName}</TableCell>
                     <TableCell>{row.operationTypeName}</TableCell>
-                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.roomNumber}</TableCell>
+                    <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{row.materialValuInventoryNumber}</TableCell>
+                    <TableCell>{row.nomenclatureNumber}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -177,6 +285,9 @@ const InventoryBookeList = () => {
           to={"/add-inventorybook"}
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
+        <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+          Сгенерировать инвентаризационную опись
+        </button> 
       </div>
       <div className="col-md-4">
         {currentInventoryBooke && currentOperationsType && currentMaterialValue && currentUser ? (
@@ -196,6 +307,12 @@ const InventoryBookeList = () => {
             </div>
             <div>
               <label>
+                <strong>Аудитория:</strong>
+              </label>{" "}
+              {currentInventoryBooke.roomNumber}
+            </div>
+            <div>
+              <label>
                 <strong>Комментарий:</strong>
               </label>{" "}
               {currentInventoryBooke.comment}
@@ -204,7 +321,7 @@ const InventoryBookeList = () => {
               <label>
                 <strong>Дата:</strong>
               </label>{" "}
-              {currentInventoryBooke.date}
+              {new Date(currentInventoryBooke.date).toLocaleString()}
             </div>
             <div>
               <label>
@@ -220,21 +337,19 @@ const InventoryBookeList = () => {
             </div>
             {showMaterialPersonBoard && (
             <div>
-            <Link
-              to={"/inventorybook/" + currentInventoryBooke.materialValueId}
-              className="m-3 btn btn-outline-secondary"
-            >
-              Редактировать
-            </Link>
-            <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
-              Удалить
-            </button>
-
-            {isAllAprove.isAprove && (
-                <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
-                  Сгенерировать акт {currentOperationsType.name}
-                </button> 
-            )}
+            {currentInventoryBooke.operationTypeName !== "Списание" && 
+            <div>
+              <Link
+                to={"/inventorybook/" + currentInventoryBooke.materialValueId}
+                className="m-3 btn btn-outline-secondary"
+              >
+                Редактировать
+              </Link> 
+            </div>
+            }
+                          <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+                Удалить
+              </button>
             </div>)}
           </div>
         ) : (
