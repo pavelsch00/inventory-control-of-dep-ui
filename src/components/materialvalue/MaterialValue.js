@@ -27,15 +27,8 @@ const MaterialValue = props => {
   const initialMaterialValueState = {
     categoryId: 0,
     name: "",
-    dateOfIssue: "",
     description: "",
-    factoryNumber: "",
-    inventoryNumber: "",
-    nomenclatureNumber: "",
-    passportNumber: "",
-    price: 0,
-    roomId: 0,
-    writeOffDate: "",
+    roomId: 0
   };
   const [currentMaterialValue, setCurrentMaterialValue] = useState(initialMaterialValueState);
   const [message, setMessage] = useState("");
@@ -120,15 +113,8 @@ const MaterialValue = props => {
     setMessage("Пожалуйста подождите");
     var data = {
       categoryId: selectedCategory.id,
-      dateOfIssue: currentMaterialValue.dateOfIssue,
       description: currentMaterialValue.description,
-      factoryNumber: currentMaterialValue.factoryNumber,
-      inventoryNumber: currentMaterialValue.inventoryNumber,
-      nomenclatureNumber: currentMaterialValue.nomenclatureNumber,
-      passportNumber: currentMaterialValue.passportNumber,
-      price: currentMaterialValue.price,
       roomId: selectedRoom.id,
-      writeOffDate: currentMaterialValue.writeOffDate,
       name: currentMaterialValue.name
     };
 
@@ -173,18 +159,6 @@ const MaterialValue = props => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="price">Цена</label>
-              <Input
-                type="text"
-                className="form-control"
-                id="price"
-                name="price"
-                value={currentMaterialValue.price}
-                onChange={handleInputChange}
-                validations={[required]}
-              />
-            </div>
-            <div className="form-group">
               <label htmlFor="categoryId">Категория</label>
               <Dropdown onSelect={(e) => setCategory(e) }  >
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
@@ -211,74 +185,6 @@ const MaterialValue = props => {
                     ))}
                 </Dropdown.Menu>
               </Dropdown>
-            </div>
-            <div className="form-group">
-              <label htmlFor="dateOfIssue">Дата создания</label>
-              <Input
-                type="datetime"
-                className="form-control"
-                id="dateOfIssue"
-                name="dateOfIssue"
-                value={currentMaterialValue.dateOfIssue}
-                onChange={handleInputChange}
-                validations={[required]}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="writeOffDate">Дата списание</label>
-              <Input
-                type="datetime"
-                className="form-control"
-                id="writeOffDate"
-                name="writeOffDate"
-                value={currentMaterialValue.writeOffDate}
-                onChange={handleInputChange}
-                validations={[required]}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="factoryNumber">Заводской номер</label>
-              <input
-                type="text"
-                className="form-control"
-                id="factoryNumber"
-                name="factoryNumber"
-                value={currentMaterialValue.factoryNumber}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="inventoryNumber">Инвентарный номер</label>
-              <input
-                type="text"
-                className="form-control"
-                id="inventoryNumber"
-                name="inventoryNumber"
-                value={currentMaterialValue.inventoryNumber}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="nomenclatureNumber">Номенклатурный номер</label>
-              <input
-                type="text"
-                className="form-control"
-                id="nomenclatureNumber"
-                name="nomenclatureNumber"
-                value={currentMaterialValue.nomenclatureNumber}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="passportNumber">Паспортный номер</label>
-              <input
-                type="text"
-                className="form-control"
-                id="passportNumber"
-                name="passportNumber"
-                value={currentMaterialValue.passportNumber}
-                onChange={handleInputChange}
-              />
             </div>
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
           </Form>

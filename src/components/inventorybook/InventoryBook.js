@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import MaterialValueDataService from "../../services/dataService/api-materialvalue-service";
+import OperationtypeDataService from "../../services/dataService/api-operationstype-service";
 import RoomDataService from "../../services/dataService/api-room-service";
 import CategoryDataService from "../../services/dataService/api-category-service";
+import InventoryBookeDataService from "../../services/dataService/api-inventorybook-service";
 import Dropdown from 'react-bootstrap/Dropdown'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
@@ -37,6 +39,11 @@ const MaterialValue = props => {
     roomId: 0,
     writeOffDate: "",
   };
+
+  const [InventoryBook, setInventoryBook] = useState(null);
+  const [operationtypeList, setOperationtypeList] = useState([]);
+  const [selectedOperationtype, setSelectedOperationtype] = useState(null);
+
   const [currentMaterialValue, setCurrentMaterialValue] = useState(initialMaterialValueState);
   const [message, setMessage] = useState("");
   const [roomList, setRoomList] = useState([]);
@@ -52,14 +59,30 @@ const MaterialValue = props => {
         getRoomList();
         getCategoryById(response.data.categoryId);
         getCategoryList();
+        getOperationtypeList();
       })
       .catch(e => {
         console.log(e);
       });
   };
+
   useEffect(() => {
-    if (id)
-      getMaterialValue(id);
+    console.log(InventoryBook);
+    if(InventoryBook)
+    getMaterialValue(InventoryBook.materialValueId);
+  }, [InventoryBook]);
+
+  useEffect(() => {
+    if (id){
+      InventoryBookeDataService.get(id)
+      .then(response => {
+        setInventoryBook(response.data);
+        getOperationtypeById(response.data.operationTypeId);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    }
   }, [id]);
   
   const handleInputChange = event => {
@@ -68,10 +91,31 @@ const MaterialValue = props => {
     setCurrentMaterialValue({ ...currentMaterialValue, [name]: value });
   };
 
+  const getOperationtypeList = ()  => {
+    OperationtypeDataService.getAll()
+      .then(response => {
+        setOperationtypeList(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const setOperationtype = id => {
+    setSelectedOperationtype(operationtypeList.find(x => x.id === parseInt(id)));
+  };
   const setRoom = id => {
     setSelectedRoom(roomList.find(x => x.id === parseInt(id)));
 
     currentMaterialValue.roomId = parseInt(selectedRoom.id);
+  };
+  const getOperationtypeById = id  => {
+    OperationtypeDataService.get(id)
+      .then(response => {
+        setSelectedOperationtype(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
   const getRoomById = id  => {
     RoomDataService.get(id)
@@ -131,6 +175,22 @@ const MaterialValue = props => {
       writeOffDate: currentMaterialValue.writeOffDate,
       name: currentMaterialValue.name
     };
+    
+    var inventoryBookData = {
+      materialValueId: InventoryBook.materialValueId,
+      userId: InventoryBook.userId,
+      operationTypeId: selectedOperationtype.id,
+      comment: "",
+      date: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().substring(0, 19)
+    };
+
+    InventoryBookeDataService.update(InventoryBook.id, inventoryBookData)
+    .then(response => {
+      setMessage("Обновление прошло успешно");
+    })
+    .catch(e => {
+      console.log(e);
+    });
 
     MaterialValueDataService.update(currentMaterialValue.id, data)
       .then(response => {
@@ -146,7 +206,7 @@ const MaterialValue = props => {
   };
   return (
     <div>
-      {currentMaterialValue && selectedRoom && selectedCategory ? (
+      {currentMaterialValue && selectedRoom && selectedOperationtype && selectedCategory ? (
         <div className="edit-form">
           <h4>Инвентарная книга</h4>
           <Form ref={form} onSubmit={updateMaterialValue}>
@@ -160,6 +220,20 @@ const MaterialValue = props => {
                 onChange={handleInputChange}
                 validations={[required]}
               />
+            </div>
+            <div className="form-group">
+              <label htmlFor="operationtypeId">Тип операции</label>
+              <Dropdown onSelect={(e) => setOperationtype(e)} >
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
+                {selectedOperationtype?.name}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {operationtypeList &&
+                    operationtypeList.map((operationtype, index) => (
+                      <Dropdown.Item eventKey={operationtype.id} >{operationtype.name}</Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
             <div className="form-group">
               <label htmlFor="description">Описание</label>
@@ -215,7 +289,7 @@ const MaterialValue = props => {
             <div className="form-group">
               <label htmlFor="dateOfIssue">Дата создания</label>
               <Input
-                type="datetime"
+                type="datetime-local"
                 className="form-control"
                 id="dateOfIssue"
                 name="dateOfIssue"
@@ -227,7 +301,7 @@ const MaterialValue = props => {
             <div className="form-group">
               <label htmlFor="writeOffDate">Дата списание</label>
               <Input
-                type="datetime"
+                type="datetime-local"
                 className="form-control"
                 id="writeOffDate"
                 name="writeOffDate"

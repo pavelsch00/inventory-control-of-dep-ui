@@ -285,9 +285,9 @@ const InventoryBookeList = () => {
           to={"/add-inventorybook"}
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
-        <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+        {false && <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
           Сгенерировать инвентаризационную опись
-        </button> 
+        </button> }
       </div>
       <div className="col-md-4">
         {currentInventoryBooke && currentOperationsType && currentMaterialValue && currentUser ? (
@@ -337,17 +337,17 @@ const InventoryBookeList = () => {
             </div>
             {showMaterialPersonBoard && (
             <div>
-            {currentInventoryBooke.operationTypeName !== "Списание" && 
+            {currentInventoryBooke.operationTypeName !== "Списание" && isAllAprove.isAprove &&
             <div>
               <Link
-                to={"/inventorybook/" + currentInventoryBooke.materialValueId}
+                to={"/inventorybook/" + currentInventoryBooke.id}
                 className="m-3 btn btn-outline-secondary"
               >
                 Редактировать
               </Link> 
             </div>
             }
-                          <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+              <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
                 Удалить
               </button>
             </div>)}

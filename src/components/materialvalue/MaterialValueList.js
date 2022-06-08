@@ -140,16 +140,6 @@ const MaterialValueList = () => {
                 setFilterName("Название");
                 handleClose();
                 }}>Название</MenuItem>
-              <MenuItem onClick={() => {
-                setFilter("inventoryNumber");
-                setFilterName("Инвентарный номер");
-                handleClose();
-                }}>Инвентарный номер</MenuItem>
-                <MenuItem onClick={() => {
-                setFilter("price");
-                setFilterName("Цена");
-                handleClose();
-                }}>Цена</MenuItem>
             </Menu>
           <div className="input-group-append">
             <button
@@ -169,9 +159,7 @@ const MaterialValueList = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Название</TableCell>
-                <TableCell>Инвентарный номер</TableCell>
                 <TableCell>Описание</TableCell>
-                <TableCell>Цена</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -188,9 +176,7 @@ const MaterialValueList = () => {
                     <TableCell component="th" scope="row">
                       {row.name}
                     </TableCell>
-                    <TableCell>{row.inventoryNumber}</TableCell>
                     <TableCell>{row.description}</TableCell>
-                    <TableCell>{row.price}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -220,45 +206,9 @@ const MaterialValueList = () => {
             </div>
             <div>
               <label>
-                <strong>Цена:</strong>
-              </label>{" "}
-              {currentMaterialValue.price}
-            </div>
-            <div>
-              <label>
                 <strong>Катигория:</strong>
               </label>{" "}
               {currentCategory.name}
-            </div>
-            <div>
-              <label>
-                <strong>Дата списание:</strong>
-              </label>{" "}
-              {currentMaterialValue.writeOffDate}
-            </div>
-            <div>
-              <label>
-                <strong>Заводской номер:</strong>
-              </label>{" "}
-              {currentMaterialValue.factoryNumber}
-            </div>
-            <div>
-              <label>
-                <strong>Инентарный номер:</strong>
-              </label>{" "}
-              {currentMaterialValue.inventoryNumber}
-            </div>
-            <div>
-              <label>
-                <strong>Номенклатурный номер:</strong>
-              </label>{" "}
-              {currentMaterialValue.nomenclatureNumber}
-            </div>
-            <div>
-              <label>
-                <strong>Паспортный номер номер:</strong>
-              </label>{" "}
-              {currentMaterialValue.passportNumber}
             </div>
             <div>
               <label>

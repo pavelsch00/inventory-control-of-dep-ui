@@ -38,7 +38,6 @@ const AddInventoryBook = () => {
   const [materialvalueList, setMaterialValueList] = useState([]);
   const [operationtypeList, setOperationtypeList] = useState([]);
 
-
   const [selectedOperationtype, setSelectedOperationtype] = useState(null);
   const [selectedMaterialValue, setSelectedMaterialValue] = useState(null);
 
@@ -63,7 +62,7 @@ const AddInventoryBook = () => {
     setSelectedMaterialValue(materialvalueList.find(x => x.id === parseInt(id)));
   };
   const setOperationtype = id => {
-    setSelectedOperationtype(operationtypeList.find(x => x.id === parseInt(id)));
+    setSelectedOperationtype(operationtypeList.find(x => x.name === "Закупка"));
   };
 
   const getOperationtypeList = ()  => {
@@ -129,7 +128,7 @@ const AddInventoryBook = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="materialvalueId">Материальная ценность</label>
+              <label htmlFor="materialvalueId" >Материальная ценность</label>
               <Dropdown onSelect={(e) => setMaterialValue(e) }  >
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
                 {selectedMaterialValue?.name}
@@ -151,7 +150,7 @@ const AddInventoryBook = () => {
                 <Dropdown.Menu>
                   {operationtypeList &&
                     operationtypeList.map((operationtype, index) => (
-                      <Dropdown.Item eventKey={operationtype.id} >{operationtype.name}</Dropdown.Item>
+                      <Dropdown.Item disabled="true" eventKey={operationtype.id} >{operationtype.name}</Dropdown.Item>
                     ))}
                 </Dropdown.Menu>
               </Dropdown>

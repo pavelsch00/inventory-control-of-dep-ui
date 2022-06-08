@@ -205,7 +205,15 @@ const AprovarList = () => {
                 <strong>Сотрудник:</strong>
               </label>{" "}
               {currentUser.name} {currentUser.surname} {currentUser.lastName} 
-            </div>  
+            </div>
+            {!showMaterialPersonBoard &&             <div>
+              <label>
+                <strong>Статус одобрения:</strong>
+              </label>{" "}
+              {isAllAprove.isAprove === true ? "Одобрено" : "Не одобренно" }
+            </div>}
+
+            
             {!showMaterialPersonBoard && (
             <div>
                 <button className="m-3 btn btn-outline-secondary" onClick={onChangeTrue}>
