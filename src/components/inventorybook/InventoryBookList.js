@@ -6,6 +6,7 @@ import UserDataService from "../../services/dataService/api-user-service";
 import { Link } from "react-router-dom";
 import AuthService from "../../services/authService/auth.service";
 import AprovarDataService from "../../services/dataService/api-aprovar-service";
+import PdfCreatorDataService from "../../services/dataService/api-pdfcreator-service";
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -144,6 +145,21 @@ const InventoryBookeList = () => {
     getIsAllAproveById(InventoryBooke.id);
     getUserById(InventoryBooke.userId);
   };
+  const pdfCreatorHandle = () => {
+    PdfCreatorDataService.get(InventoryBooke)
+      .then(response => {
+        //Create a Blob from the PDF Stream
+        const file = new Blob([response.data], { type: "application/pdf" });
+        //Build a URL from the file
+        const fileURL = URL.createObjectURL(file);
+        //Open the URL on new Window
+         const pdfWindow = window.open();
+         pdfWindow.location.href = fileURL;       
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   const deleteInventoryBooke = () => {
     InventoryBookeDataService.remove(currentInventoryBooke.id)
       .then(response => {
@@ -233,7 +249,7 @@ const InventoryBookeList = () => {
                 }}>Аудитория</MenuItem>
                 <MenuItem onClick={() => {
                 setFilter("nomenclatureNumber");
-                setFilterName("Нуменлатурный номер");
+                setFilterName("Номенклатурный номер");
                 handleClose();
                 }}>Нуменлатурный номер</MenuItem>
             </Menu>
@@ -282,7 +298,7 @@ const InventoryBookeList = () => {
                 <TableCell>Номер аудитории</TableCell>
                 <TableCell>Дата</TableCell>
                 <TableCell>Инвентарный номер</TableCell>
-                <TableCell>Нуменлатурный номер</TableCell>
+                <TableCell>Номенклатурный номер</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -314,9 +330,9 @@ const InventoryBookeList = () => {
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
         }
-        {false && <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+        <button className="m-3 btn btn-outline-secondary" onClick={pdfCreatorHandle}>
           Сгенерировать инвентаризационную опись
-        </button> }
+        </button>
       </div>
       <div className="col-md-4">
         {currentInventoryBooke && currentOperationsType && currentMaterialValue && currentUser ? (
