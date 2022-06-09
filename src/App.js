@@ -46,7 +46,7 @@ import AddInventoryBook from "./components/inventorybook/AddInventoryBook";
 import AprovalList from "./components/aproval/AprovalList";
 
 const App = () => {
-  const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+  const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [showDepHeadBoard, setDepHeadBoard] = useState(false);
   const [showPurchaseDepartmentBoard, setPurchaseDepartmentBoard] = useState(false);
@@ -56,7 +56,7 @@ const App = () => {
     const user = AuthService.getCurrentUser();
     if (user) {
       setCurrentUser(user);
-      setShowModeratorBoard(user.roles.includes("MaterialPerson"));
+      setMaterialPersonBoard(user.roles.includes("MaterialPerson"));
       setShowAdminBoard(user.roles.includes("Admin"));
       setPurchaseDepartmentBoard(user.roles.includes("PurchaseDepartment"));
       setDepHeadBoard(user.roles.includes("DepHead"));
@@ -75,8 +75,8 @@ const App = () => {
         {showDepHeadBoard && (
                <div className="navbar-nav ml-auto">
                <li className="nav-item">
-                 <Link to={"/materialvalue"} className="nav-link">
-                   Материальная ценность
+                 <Link to={"/inventorybook"} className="nav-link">
+                   Инвентарная книга
                  </Link>
                </li>
                <li className="nav-item">
@@ -100,7 +100,7 @@ const App = () => {
                </li>
              </div>
           )}
-          {showModeratorBoard && (
+          {showMaterialPersonBoard && (
                <div className="navbar-nav ml-auto">
                <li className="nav-item">
                  <Link to={"/materialvalue"} className="nav-link">
@@ -149,16 +149,6 @@ const App = () => {
                <li className="nav-item">
                  <Link to={"/room"} className="nav-link">
                    Аудитория
-                 </Link>
-               </li>
-               <li className="nav-item">
-                 <Link to={"/materialvalue"} className="nav-link">
-                   Материальная ценность
-                 </Link>
-               </li>
-               <li className="nav-item">
-                 <Link to={"/inventorybook"} className="nav-link">
-                   Инвентарная книга
                  </Link>
                </li>
              </div>

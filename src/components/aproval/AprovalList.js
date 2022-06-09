@@ -37,7 +37,6 @@ const AprovarList = () => {
   const [currentInventoryBook, setCurrentInventoryBook] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isAprove, setIsAprove] = useState(false);
-  const [isAllAprove, setAllAprove] = useState(false);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -46,8 +45,14 @@ const AprovarList = () => {
   }, [currentAprovar]);
 
   useEffect(() => {
-    const user = AuthService.getCurrentUser();
+    if(currentAprovar !== null){
+      updateMaterialValue();
+    }
+  }, [isAprove]);
 
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    retrieveAprovar(user.UserId);
     AprovarDataService.getAll(user.UserId)
     .then(response => {
      if(checked){
@@ -69,22 +74,11 @@ const AprovarList = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const getIsAllAproveById = ()  => {
-    AprovarDataService.getById(currentInventoryBook.id)
-      .then(response => {
-        setAllAprove(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
   const onChangeTrue = () => {
     setIsAprove(true);
-    updateMaterialValue();
   };
   const onChangeFalse = () => {
     setIsAprove(false);
-    updateMaterialValue();
   };
   const onChangeSearchName = e => {
     const searchId = e.target.value;
@@ -93,7 +87,11 @@ const AprovarList = () => {
   const retrieveAprovar = (userId) => {
     AprovarDataService.getAll(userId)
       .then(response => {
-        setAprovar(response.data);
+        if(checked){
+          setAprovar(response.data.filter(x => x["isAprove"] === false));
+        }else{
+          setAprovar(response.data);
+        }
       })
       .catch(e => {
         console.log(e);
@@ -120,18 +118,11 @@ const AprovarList = () => {
       });
   };
 
-  const refreshList = () => {
-    retrieveAprovar();
-    setCurrentAprovar(null);
-    setCurrentIndex(-1);
-  };
   const setActiveAprovar = (Aprovar, index) => {
     setCurrentAprovar(Aprovar);
     setCurrentIndex(index);
     getInventoryBookById(Aprovar.inventoryBookId);
-    getIsAllAproveById(Aprovar.userId);
     getUserById(Aprovar.userId);
-    console.log(Aprovar);
   };
   const updateMaterialValue = () => {
     var data = {
@@ -142,6 +133,8 @@ const AprovarList = () => {
 
     AprovarDataService.update(currentAprovar.id, data)
       .then(response => {
+        const user = AuthService.getCurrentUser();
+        retrieveAprovar(user.UserId);
       })
       .catch(e => {
         console.log(e);
@@ -268,11 +261,6 @@ const AprovarList = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <Link
-          to={"/add-aprovar"}
-          className="m-3 btn btn-outline-secondary" >Добавить  
-        </Link>
       </div>
       <div className="col-md-4">
         {currentAprovar && currentInventoryBook && currentUser ? (
@@ -307,16 +295,8 @@ const AprovarList = () => {
                 <strong>Сотрудник:</strong>
               </label>{" "}
               {currentUser.name} {currentUser.surname} {currentUser.lastName} 
-            </div>
-            {!showMaterialPersonBoard &&             <div>
-              <label>
-                <strong>Статус одобрения:</strong>
-              </label>{" "}
-              {isAllAprove.isAprove === true ? "Одобрено" : "Не одобренно" }
-            </div>}
-
-            
-            {!showMaterialPersonBoard && (
+            </div>    
+            {!showMaterialPersonBoard && !currentAprovar.isAprove && (
             <div>
                 <button className="m-3 btn btn-outline-secondary" onClick={onChangeTrue}>
                   Одобрить

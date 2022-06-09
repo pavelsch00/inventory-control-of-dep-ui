@@ -308,11 +308,12 @@ const InventoryBookeList = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
+        {showMaterialPersonBoard &&
         <Link
           to={"/add-inventorybook"}
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
+        }
         {false && <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
           Сгенерировать инвентаризационную опись
         </button> }
