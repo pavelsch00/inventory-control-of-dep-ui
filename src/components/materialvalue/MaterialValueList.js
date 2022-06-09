@@ -140,6 +140,21 @@ const MaterialValueList = () => {
                 setFilterName("Название");
                 handleClose();
                 }}>Название</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("description");
+                setFilterName("Описание");
+                handleClose();
+                }}>Описание</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("categoryName");
+                setFilterName("Категория");
+                handleClose();
+                }}>Категория</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("roomNumber");
+                setFilterName("Аудитория");
+                handleClose();
+                }}>Аудитория</MenuItem>
             </Menu>
           <div className="input-group-append">
             <button
@@ -160,6 +175,8 @@ const MaterialValueList = () => {
               <TableRow>
                 <TableCell>Название</TableCell>
                 <TableCell>Описание</TableCell>
+                <TableCell>Категория</TableCell>
+                <TableCell>Аудитория</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -177,6 +194,8 @@ const MaterialValueList = () => {
                       {row.name}
                     </TableCell>
                     <TableCell>{row.description}</TableCell>
+                    <TableCell>{row.categoryName}</TableCell>
+                    <TableCell>{row.roomNumber}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>

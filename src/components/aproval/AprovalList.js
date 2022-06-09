@@ -13,7 +13,22 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Switch from '@mui/material/Switch';
+
 const AprovarList = () => {
+  const [filter, setFilter] = useState("materialValueName");
+  const [filterName, setFilterName] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
   const [Aprovar, setAprovar] = useState([]);
   const [currentAprovar, setCurrentAprovar] = useState(null);
@@ -23,17 +38,41 @@ const AprovarList = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAprove, setIsAprove] = useState(false);
   const [isAllAprove, setAllAprove] = useState(false);
-  
+
   useEffect(() => {
     const user = AuthService.getCurrentUser();
     retrieveAprovar(user.UserId);
     setMaterialPersonBoard(user.roles.includes("MaterialPerson"));
   }, [currentAprovar]);
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    AprovarDataService.getAll(user.UserId)
+    .then(response => {
+     if(checked){
+        setAprovar(response.data.filter(x => x["isAprove"] === false));
+      }else{
+        setAprovar(response.data);
+      }
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }, [checked]);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   const getIsAllAproveById = ()  => {
     AprovarDataService.getById(currentInventoryBook.id)
       .then(response => {
         setAllAprove(response.data);
-        console.log(response.data)
       })
       .catch(e => {
         console.log(e);
@@ -109,9 +148,16 @@ const AprovarList = () => {
       });
   };
   const findById = () => {
-      AprovarDataService.getAll()
+      const user = AuthService.getCurrentUser();
+      AprovarDataService.getAll(user.UserId)
       .then(response => {
-        setAprovar(response.data.filter(x => x.name.includes(searchId)));
+        const data = response.data.filter(x => x["isAprove"] === false);
+
+        if(checked){
+          setAprovar(data.filter(x => x[filter].includes(searchId)));
+        }else{
+          setAprovar(response.data.filter(x => x[filter].includes(searchId)));
+        } 
       })
       .catch(e => {
         console.log(e);
@@ -128,6 +174,44 @@ const AprovarList = () => {
             value={searchId}
             onChange={onChangeSearchName}
           />
+          <div>
+            <button
+              className="searchButton btn btn-outline-secondary"
+              onClick={handleClick}
+            >
+              {filterName ? filterName : "Выберите фильтер"}
+            </button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={() => {
+                setFilter("materialValueName");
+                setFilterName("Название");
+                handleClose();
+                }}>Название</MenuItem>
+              <MenuItem onClick={() => {
+                setFilter("operationTypeName");
+                setFilterName("Тип операции");
+                handleClose();
+                }}>Тип операции</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("categoryName");
+                setFilterName("Категория");
+                handleClose();
+                }}>Категория</MenuItem>
+                <MenuItem onClick={() => {
+                setFilter("roomNumber");
+                setFilterName("Аудитория");
+                handleClose();
+                }}>Аудитория</MenuItem>
+            </Menu>
+          </div>
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
@@ -137,15 +221,29 @@ const AprovarList = () => {
               Поиск
             </button>
           </div>
+          <div className="col-md-12">
+      <label>
+        Скрыть подтвержденные:
+      </label>
+      <Switch
+      checked={checked}
+      onChange={handleChange}
+      inputProps={{ 'aria-label': 'controlled' }}
+      />
+      </div>
         </div>
       </div>
       <div className="col-md-8">
         <h2>Запрос на подтверждние</h2>
         <h4>Список материальных ценностей</h4>
-        <TableContainer sx={{ width: 650 }} component={Paper}>
+        <TableContainer sx={{ width: 800 }} component={Paper}>
           <Table  aria-label="simple table">
             <TableHead>
               <TableRow>
+                <TableCell>Название</TableCell>
+                <TableCell>Категория</TableCell>
+                <TableCell>Тип операции</TableCell>
+                <TableCell>Номер аудитории</TableCell>
                 <TableCell>Состояние</TableCell>
               </TableRow>
             </TableHead>
@@ -160,6 +258,10 @@ const AprovarList = () => {
                     }
                     onClick={() => setActiveAprovar(row, row.id)}
                   >
+                    <TableCell component="th" scope="row">{row.materialValueName}</TableCell>
+                    <TableCell>{row.categoryName}</TableCell>
+                    <TableCell>{row.operationTypeName}</TableCell>
+                    <TableCell>{row.roomNumber}</TableCell>
                     <TableCell component="th" scope="row">{row.isAprove === true ? "Одобрено" : "Не одобренно"}</TableCell>
                   </TableRow>
                 ))}

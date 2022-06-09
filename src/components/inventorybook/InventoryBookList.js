@@ -25,6 +25,12 @@ const InventoryBookeList = () => {
     setChecked(event.target.checked);
   };
 
+  const [checkedAprove, setCheckedAprove] = useState(false);
+
+  const handleChangeAprove = (event) => {
+    setCheckedAprove(event.target.checked);
+  };
+
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
   const [InventoryBooke, setInventoryBooke] = useState([]);
   const [currentInventoryBooke, setCurrentInventoryBooke] = useState(null);
@@ -49,8 +55,13 @@ const InventoryBookeList = () => {
   useEffect(() => {
     InventoryBookeDataService.getAll()
     .then(response => {
-      if(checked){
+      if(checked && checkedAprove){
+        const data = response.data.filter(x => x["operationTypeName"].includes("Закупка"));
+        setInventoryBooke(data.filter(x => x["isAprove"] === true));
+      }else if(checked){
         setInventoryBooke(response.data.filter(x => x["operationTypeName"].includes("Закупка")));
+      }else if(checkedAprove){
+        setInventoryBooke(response.data.filter(x => x["isAprove"] === true));
       }else{
         setInventoryBooke(response.data);
       }
@@ -58,7 +69,7 @@ const InventoryBookeList = () => {
     .catch(e => {
       console.log(e);
     });
-  }, [checked]);
+  }, [checked, checkedAprove]);
 
   useEffect(() => {
     retrieveInventoryBooke();
@@ -146,8 +157,15 @@ const InventoryBookeList = () => {
       InventoryBookeDataService.getAll()
       .then(response => {
         const data = response.data.filter(x => x["operationTypeName"].includes("Закупка"));
-        if(checked){
+        const dataAprove = response.data.filter(x => x["isAprove"] === true);
+
+        if(checked && checkedAprove){
+          const dataAprove = data.filter(x => x["isAprove"] === true);
+          setInventoryBooke(dataAprove.filter(x => x[filter].includes(searchId)));
+        }else if(checked){
           setInventoryBooke(data.filter(x => x[filter].includes(searchId)));
+        }else if(checkedAprove){
+          setInventoryBooke(dataAprove.filter(x => x[filter].includes(searchId)));
         }else{
           setInventoryBooke(response.data.filter(x => x[filter].includes(searchId)));
         } 
@@ -167,7 +185,7 @@ const InventoryBookeList = () => {
                   value={searchId}
                   onChange={onChangeSearchName}
                 />
-              <div>
+          <div>
             <button
               className="searchButton btn btn-outline-secondary"
               onClick={handleClick}
@@ -239,7 +257,17 @@ const InventoryBookeList = () => {
       checked={checked}
       onChange={handleChange}
       inputProps={{ 'aria-label': 'controlled' }}
-    />
+      />
+      </div>
+      <div className="col-md-12">
+      <label>
+        Скрыть не подтвержденные:
+      </label>
+      <Switch
+      checked={checkedAprove}
+      onChange={handleChangeAprove}
+      inputProps={{ 'aria-label': 'controlled' }}
+      />
       </div>
       <div className="col-md-8">
         <h2>Инвентарная книга</h2>
