@@ -6,6 +6,7 @@ import "./App.css";
 import AuthService from "./services/authService/auth.service";
 import Login from "./components/authorization/login";
 import Register from "./components/authorization/register";
+import Password from "./components/authorization/password";
 import Home from "./components/home/home";
 import Profile from "./components/authorization/profile";
 import BoardModerator from "./components/home/board-moderator";
@@ -186,6 +187,7 @@ const App = () => {
         <Route exact path="/login" element={<Login/>} />
         <Route exact path="/register" element={<Register/>} />
         <Route exact path="/profile" element={<Profile/>} />
+        <Route exact path="/change-password/:email" element={<Password/>} />
         <Route path="/mod" element={<BoardModerator/>} />
         <Route path="/admin" element={<BoardAdmin/>} />
 

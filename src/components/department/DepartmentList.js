@@ -76,7 +76,7 @@ const DepartmentList = () => {
         </div>
       </div>
       <div className="col-md-6">
-        <h4>Список кафедр</h4>
+        <h4>Список специальностей</h4>
         <ul className="list-group">
           {Department &&
             Department.map((Department, index) => (
@@ -99,7 +99,7 @@ const DepartmentList = () => {
       <div className="col-md-6">
         {currentDepartment ? (
           <div>
-            <h4>Кафедра</h4>
+            <h4>Специальность</h4>
             <div>
               <label>
                 <strong>Название:</strong>
@@ -119,7 +119,7 @@ const DepartmentList = () => {
         ) : (
           <div>
             <br />
-            <p>Выберите кафедру...</p>
+            <p>Выберите специальность...</p>
           </div>
         )}
       </div>

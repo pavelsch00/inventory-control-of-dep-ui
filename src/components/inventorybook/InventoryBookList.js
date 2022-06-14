@@ -57,10 +57,10 @@ const InventoryBookeList = () => {
     InventoryBookeDataService.getAll()
     .then(response => {
       if(checked && checkedAprove){
-        const data = response.data.filter(x => x["operationTypeName"].includes("Закупка"));
+        const data = response.data.filter(x => x["operationTypeName"].includes("Учет"));
         setInventoryBooke(data.filter(x => x["isAprove"] === true));
       }else if(checked){
-        setInventoryBooke(response.data.filter(x => x["operationTypeName"].includes("Закупка")));
+        setInventoryBooke(response.data.filter(x => x["operationTypeName"].includes("Учет")));
       }else if(checkedAprove){
         setInventoryBooke(response.data.filter(x => x["isAprove"] === true));
       }else{
@@ -172,7 +172,7 @@ const InventoryBookeList = () => {
   const findById = () => {
       InventoryBookeDataService.getAll()
       .then(response => {
-        const data = response.data.filter(x => x["operationTypeName"].includes("Закупка"));
+        const data = response.data.filter(x => x["operationTypeName"].includes("Учет"));
         const dataAprove = response.data.filter(x => x["isAprove"] === true);
 
         if(checked && checkedAprove){

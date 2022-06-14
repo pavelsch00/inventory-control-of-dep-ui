@@ -15,7 +15,7 @@ const update = (email, data) => {
   return http.put(`/${controllerName}/${email}`, data);
 };
 const changepassword = (email, data) => {
-  return http.put(`/${controllerName}/${email}/changepassword`, data);
+  return http.put(`/${controllerName}/${email}/changePassword`, data);
 };
 const addrole = (email, data) => {
   return http.put(`/${controllerName}/${email}/addrole`, data);

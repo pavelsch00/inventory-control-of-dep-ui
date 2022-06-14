@@ -211,6 +211,20 @@ const MaterialValue = props => {
           <h4>Инвентарная книга</h4>
           <Form ref={form} onSubmit={updateMaterialValue}>
           <div className="form-group">
+              <label htmlFor="categoryId">Категория</label>
+              <Dropdown onSelect={(e) => setCategory(e) }  >
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
+                {selectedCategory?.name}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {categoryList &&
+                    categoryList.map((category) => (
+                      <Dropdown.Item value={category.id} eventKey={category.id} >{category.name}</Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          <div className="form-group">
               <label htmlFor="name">Название</label>
               <Input
                 type="text"
@@ -259,20 +273,6 @@ const MaterialValue = props => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="categoryId">Категория</label>
-              <Dropdown onSelect={(e) => setCategory(e) }  >
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
-                {selectedCategory?.name}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {categoryList &&
-                    categoryList.map((category) => (
-                      <Dropdown.Item value={category.id} eventKey={category.id} >{category.name}</Dropdown.Item>
-                    ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-            <div className="form-group">
               <label htmlFor="roomId">Аудитория</label>
               <Dropdown onSelect={(e) => setRoom(e)} >
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
@@ -310,7 +310,7 @@ const MaterialValue = props => {
                 validations={[required]}
               />
             </div>
-            <div className="form-group">
+            {selectedCategory.name !== "Канцелярия" && (<div><div className="form-group">
               <label htmlFor="factoryNumber">Заводской номер</label>
               <input
                 type="text"
@@ -353,7 +353,7 @@ const MaterialValue = props => {
                 value={currentMaterialValue.passportNumber}
                 onChange={handleInputChange}
               />
-            </div>
+            </div></div>)}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
           </Form>
           <button className="m-3 btn btn-outline-secondary" onClick={goBack}>

@@ -62,7 +62,7 @@ const AddInventoryBook = () => {
     setSelectedMaterialValue(materialvalueList.find(x => x.id === parseInt(id)));
   };
   const setOperationtype = id => {
-    setSelectedOperationtype(operationtypeList.find(x => x.name === "Закупка"));
+    setSelectedOperationtype(operationtypeList.find(x => x.name === "Учет"));
   };
 
   const getOperationtypeList = ()  => {
