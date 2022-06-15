@@ -87,7 +87,7 @@ const RoomList = () => {
                 onClick={() => setActiveRoom(Room, index)}
                 key={index}
               >
-                {Room.name}-{Room.number}
+                {Room.name} {Room.number}
               </li>
             ))}
         </ul>

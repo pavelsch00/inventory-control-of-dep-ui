@@ -1,10 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import OperationsTypeDataService from "../../services/dataService/api-operationstype-service";
+
+import Input from "react-validation/build/input";
+import Form from "react-validation/build/form";
+import CheckButton from "react-validation/build/button";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Поле обязательно для заполнения!
+      </div>
+    );
+  }
+};
 
 const OperationsType = props => {
   const { id }= useParams();
   let navigate = useNavigate();
+          
+  const form = useRef();
+  const checkBtn = useRef();
+
   const initialOperationsTypeState = {
     id: id,
     name: ""
@@ -30,6 +48,8 @@ const OperationsType = props => {
     setCurrentOperationsType({ ...currentOperationsType, [name]: value });
   };
   const updateOperationsType = () => {
+    form.current.validateAll();
+    if (checkBtn.current.context._errors.length === 0) {
     setMessage("Пожалуйста подождите");
     OperationsTypeDataService.update(currentOperationsType.id, currentOperationsType)
       .then(response => {
@@ -39,6 +59,7 @@ const OperationsType = props => {
       .catch(e => {
         console.log(e);
       });
+    }
   };
   const goBack = () => {
     navigate("/operationsType");
@@ -48,19 +69,21 @@ const OperationsType = props => {
       {currentOperationsType ? (
         <div className="edit-form">
           <h4>Тип операции</h4>
-          <form>
+          <Form ref={form}>
             <div className="form-group">
               <label htmlFor="name">Название</label>
-              <input
+              <Input
                 type="text"
                 className="form-control"
                 id="name"
                 name="name"
                 value={currentOperationsType.name}
                 onChange={handleInputChange}
+                validations={[required]}
               />
             </div>
-          </form>
+            <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          </Form>
           <button className="m-3 btn btn-outline-secondary" onClick={goBack}>
             Назад
           </button>
@@ -76,7 +99,7 @@ const OperationsType = props => {
       ) : (
         <div>
           <br />
-          <p>Выбирите тип операции...</p>
+          <p>Выберите тип операции...</p>
         </div>
       )}
     </div>

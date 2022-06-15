@@ -14,7 +14,7 @@ const required = (value) => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        This field is required!
+        Поле обязательно для заполнения!
       </div>
     );
   }
@@ -23,6 +23,7 @@ const required = (value) => {
 const MaterialValue = props => {
   const { id }= useParams();
   let navigate = useNavigate();
+  
   const form = useRef();
   const checkBtn = useRef();
 
@@ -372,7 +373,7 @@ const MaterialValue = props => {
       ) : (
         <div>
           <br />
-          <p>Выбирите материальную ценность...</p>
+          <p>Выберите материальную ценность...</p>
         </div>
       )}
     </div>

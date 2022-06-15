@@ -13,7 +13,7 @@ const required = (value) => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        This field is required!
+        Поле обязательно для заполнения!
       </div>
     );
   }
@@ -196,7 +196,7 @@ const AddInventoryBook = () => {
       ) : (
         <div>
           <br />
-          <p>Выбирите материальную ценность...</p>
+          <p>Выберите материальную ценность...</p>
         </div>
       )}
     </div>

@@ -46,6 +46,10 @@ import AddInventoryBook from "./components/inventorybook/AddInventoryBook";
 
 import AprovalList from "./components/aproval/AprovalList";
 
+import UserList from "./components/user/UserList";
+import User from "./components/user/User";
+import AddUser from "./components/user/AddUser";
+
 const App = () => {
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -152,6 +156,11 @@ const App = () => {
                    Аудитория
                  </Link>
                </li>
+               <li className="nav-item">
+                 <Link to={"/user"} className="nav-link">
+                   Пользователи
+                 </Link>
+               </li>
              </div>
           )}
           {currentUser && (
@@ -224,6 +233,10 @@ const App = () => {
         <Route path="/inventorybook/:id" element={<InventoryBook/>} />
 
         <Route path="/aproval" element={<AprovalList/>} />
+
+        <Route path="/user" element={<UserList/>} />
+        <Route path="/add-user" element={<AddUser/>} />
+        <Route path="/user/:id" element={<User/>} />
       </Routes>
       </div>
     </div>

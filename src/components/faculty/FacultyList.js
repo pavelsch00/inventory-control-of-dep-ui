@@ -76,7 +76,7 @@ const FacultyList = () => {
         </div>
       </div>
       <div className="col-md-6">
-        <h4>Список кафедр</h4>
+        <h4>Список факультетов</h4>
         <ul className="list-group">
           {Faculty &&
             Faculty.map((Faculty, index) => (

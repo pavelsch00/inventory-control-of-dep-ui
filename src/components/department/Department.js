@@ -1,10 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import DepartmentDataService from "../../services/dataService/api-department-service";
+
+import Input from "react-validation/build/input";
+import Form from "react-validation/build/form";
+import CheckButton from "react-validation/build/button";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Поле обязательно для заполнения!
+      </div>
+    );
+  }
+};
 
 const Department = props => {
   const { id }= useParams();
   let navigate = useNavigate();
+
+  const form = useRef();
+  const checkBtn = useRef();
+
   const initialDepartmentState = {
     id: id,
     name: ""
@@ -30,6 +48,8 @@ const Department = props => {
     setCurrentDepartment({ ...currentDepartment, [name]: value });
   };
   const updateDepartment = () => {
+    form.current.validateAll();
+    if (checkBtn.current.context._errors.length === 0) {
     setMessage("Пожалуйста подождите");
     DepartmentDataService.update(currentDepartment.id, currentDepartment)
       .then(response => {
@@ -39,6 +59,7 @@ const Department = props => {
       .catch(e => {
         console.log(e);
       });
+    }
   };
   const goBack = () => {
     navigate("/department");
@@ -47,20 +68,23 @@ const Department = props => {
     <div>
       {currentDepartment ? (
         <div className="edit-form">
-          <h4>Кафедра</h4>
-          <form>
+          <h4>Специальность</h4>
+          <Form ref={form}>
             <div className="form-group">
               <label htmlFor="name">Название</label>
-              <input
+              <Input
                 type="text"
                 className="form-control"
                 id="name"
                 name="name"
+                required
                 value={currentDepartment.name}
                 onChange={handleInputChange}
+                validations={[required]}
               />
             </div>
-          </form>
+            <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          </Form>
           <button className="m-3 btn btn-outline-secondary" onClick={goBack}>
             Назад
           </button>
@@ -76,7 +100,7 @@ const Department = props => {
       ) : (
         <div>
           <br />
-          <p>Выбирите кафедру...</p>
+          <p>Выберите кафедру...</p>
         </div>
       )}
     </div>

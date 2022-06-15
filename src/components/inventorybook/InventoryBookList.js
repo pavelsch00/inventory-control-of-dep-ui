@@ -33,6 +33,7 @@ const InventoryBookeList = () => {
   };
 
   const [showMaterialPersonBoard, setMaterialPersonBoard] = useState(false);
+  const [showPurchaseDepartmentBoard, setPurchaseDepartmentBoard] = useState(false);
   const [InventoryBooke, setInventoryBooke] = useState([]);
   const [currentInventoryBooke, setCurrentInventoryBooke] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -76,6 +77,7 @@ const InventoryBookeList = () => {
     retrieveInventoryBooke();
     const user = AuthService.getCurrentUser();
     setMaterialPersonBoard(user.roles.includes("MaterialPerson"));
+    setPurchaseDepartmentBoard(user.roles.includes("PurchaseDepartment"));
   }, []);
 
   const getIsAllAproveById = (id)  => {
@@ -325,14 +327,16 @@ const InventoryBookeList = () => {
           </Table>
         </TableContainer>
         {showMaterialPersonBoard &&
-        <Link
-          to={"/add-inventorybook"}
-          className="m-3 btn btn-outline-secondary" >Добавить  
-        </Link>
+          <Link
+            to={"/add-inventorybook"}
+            className="m-3 btn btn-outline-secondary" >Добавить  
+          </Link>
         }
-        <button className="m-3 btn btn-outline-secondary" onClick={pdfCreatorHandle}>
-          Сгенерировать инвентаризационную опись
-        </button>
+        {showPurchaseDepartmentBoard || showMaterialPersonBoard && 
+          <button className="m-3 btn btn-outline-secondary" onClick={pdfCreatorHandle}>
+            Сгенерировать инвентаризационную опись
+          </button>
+          }
       </div>
       <div className="col-md-4">
         {currentInventoryBooke && currentOperationsType && currentMaterialValue && currentUser ? (
@@ -383,14 +387,12 @@ const InventoryBookeList = () => {
             {showMaterialPersonBoard && (
             <div>
             {currentInventoryBooke.operationTypeName !== "Списание" && isAllAprove.isAprove &&
-            <div>
               <Link
-                to={"/inventorybook/" + currentInventoryBooke.id}
-                className="m-3 btn btn-outline-secondary"
-              >
-                Редактировать
-              </Link> 
-            </div>
+              to={"/inventorybook/" + currentInventoryBooke.id}
+              className="m-3 btn btn-outline-secondary"
+            >
+              Редактировать
+            </Link> 
             }
               <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
                 Удалить

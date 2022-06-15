@@ -1,10 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import CategoryDataService from "../../services/dataService/api-category-service";
+
+import Input from "react-validation/build/input";
+import Form from "react-validation/build/form";
+import CheckButton from "react-validation/build/button";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Поле обязательно для заполнения!
+      </div>
+    );
+  }
+};
 
 const Category = props => {
   const { id }= useParams();
   let navigate = useNavigate();
+        
+  const form = useRef();
+  const checkBtn = useRef();
+
   const initialCategoryState = {
     id: id,
     name: ""
@@ -30,6 +48,8 @@ const Category = props => {
     setCurrentCategory({ ...currentCategory, [name]: value });
   };
   const updateCategory = () => {
+    form.current.validateAll();
+    if (checkBtn.current.context._errors.length === 0) {
     setMessage("Пожалуйста подождите");
     CategoryDataService.update(currentCategory.id, currentCategory)
       .then(response => {
@@ -39,6 +59,7 @@ const Category = props => {
       .catch(e => {
         console.log(e);
       });
+    }
   };
   const goBack = () => {
     navigate("/category");
@@ -48,19 +69,21 @@ const Category = props => {
       {currentCategory ? (
         <div className="edit-form">
           <h4>Категория</h4>
-          <form>
+          <Form  ref={form}>
             <div className="form-group">
               <label htmlFor="name">Название</label>
-              <input
+              <Input
                 type="text"
                 className="form-control"
                 id="name"
                 name="name"
                 value={currentCategory.name}
                 onChange={handleInputChange}
+                validations={[required]}
               />
             </div>
-          </form>
+            <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          </Form>
           <button className="m-3 btn btn-outline-secondary" onClick={goBack}>
             Назад
           </button>
@@ -76,7 +99,7 @@ const Category = props => {
       ) : (
         <div>
           <br />
-          <p>Выбирите категория...</p>
+          <p>Выберите категория...</p>
         </div>
       )}
     </div>

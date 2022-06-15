@@ -49,7 +49,7 @@ const Login = () => {
             error.message ||
             error.toString();
           setLoading(false);
-          setMessage(resMessage);
+          setMessage("Неверные данные для входа!");
         }
       );
     } else {

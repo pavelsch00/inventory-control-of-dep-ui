@@ -9,7 +9,7 @@ const required = (value) => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        Поле обязательно для запалнения!
+        Поле обязательно для заполнения!
       </div>
     );
   }

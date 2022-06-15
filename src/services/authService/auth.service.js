@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt from 'jwt-decode'
+import http from "../dataService/http-common";
 
 const API_URL = "https://inventory-control-of-dep.herokuapp.com/api/v1/authorization/";
 
@@ -24,11 +25,9 @@ class AuthService {
   logout() {
     localStorage.removeItem("user");
   }
-  register(username, email, password) {
-    return axios.post(API_URL + "registration", {
-      username,
-      email,
-      password
+  register(data) {
+    return http.post(API_URL + "registration", {
+      data
     });
   }
   getCurrentUser() {

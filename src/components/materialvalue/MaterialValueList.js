@@ -167,7 +167,7 @@ const MaterialValueList = () => {
           </div>
         </div>
       </div>
-      <div className="col-md-8">
+      <div className="col-md-7">
         <h4>Список материальных ценностей</h4>
         <TableContainer sx={{ width: 650 }} component={Paper}>
           <Table  aria-label="simple table">
@@ -207,7 +207,7 @@ const MaterialValueList = () => {
           className="m-3 btn btn-outline-secondary" >Добавить  
         </Link>
       </div>
-      <div className="col-md-4">
+      <div className="col-md-5">
         {currentMaterialValue && currentRoom && currentCategory ? (
           <div>
             <h4>Материальная ценность</h4>

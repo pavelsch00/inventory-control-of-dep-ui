@@ -20,6 +20,9 @@ const changepassword = (email, data) => {
 const addrole = (email, data) => {
   return http.put(`/${controllerName}/${email}/addrole`, data);
 };
+const setIsActive = (email, data) => {
+  return http.put(`/${controllerName}/${email}/setIsActive`, data);
+};
 const remove = email => {
   return http.delete(`/${controllerName}/${email}`);
 };
@@ -34,7 +37,8 @@ const UserService = {
   addrole,
   update,
   remove,
-  deleterole
+  deleterole,
+  setIsActive
 };
 
 export default UserService;

@@ -1,10 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import FacultyDataService from "../../services/dataService/api-faculty-service";
+
+import Input from "react-validation/build/input";
+import Form from "react-validation/build/form";
+import CheckButton from "react-validation/build/button";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Поле обязательно для заполнения!
+      </div>
+    );
+  }
+};
 
 const Faculty = props => {
   const { id }= useParams();
   let navigate = useNavigate();
+  const form = useRef();
+  const checkBtn = useRef();
+
   const initialFacultyState = {
     id: id,
     name: ""
@@ -30,6 +47,8 @@ const Faculty = props => {
     setCurrentFaculty({ ...currentFaculty, [name]: value });
   };
   const updateFaculty = () => {
+    form.current.validateAll();
+    if (checkBtn.current.context._errors.length === 0) {
     setMessage("Пожалуйста подождите");
     FacultyDataService.update(currentFaculty.id, currentFaculty)
       .then(response => {
@@ -39,6 +58,7 @@ const Faculty = props => {
       .catch(e => {
         console.log(e);
       });
+    }
   };
   const goBack = () => {
     navigate("/faculty");
@@ -48,19 +68,21 @@ const Faculty = props => {
       {currentFaculty ? (
         <div className="edit-form">
           <h4>Факультет</h4>
-          <form>
+          <Form ref={form} onSubmit={updateFaculty}>
             <div className="form-group">
               <label htmlFor="name">Название</label>
-              <input
+              <Input
                 type="text"
                 className="form-control"
                 id="name"
                 name="name"
                 value={currentFaculty.name}
                 onChange={handleInputChange}
+                validations={[required]}
               />
             </div>
-          </form>
+            <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          </Form>
           <button className="m-3 btn btn-outline-secondary" onClick={goBack}>
             Назад
           </button>
@@ -76,7 +98,7 @@ const Faculty = props => {
       ) : (
         <div>
           <br />
-          <p>Выбирите кафедру...</p>
+          <p>Выберите кафедру...</p>
         </div>
       )}
     </div>

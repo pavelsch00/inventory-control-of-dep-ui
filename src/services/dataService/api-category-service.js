@@ -17,7 +17,7 @@ const update = (id, data) => {
 const remove = id => {
   return http.delete(`/${controllerName}/${id}`);
 };
-const СategoryService = {
+const CategoryService = {
   getAll,
   get,
   create,
@@ -25,4 +25,4 @@ const СategoryService = {
   remove
 };
 
-export default СategoryService;
+export default CategoryService;

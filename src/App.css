@@ -9,6 +9,12 @@
     margin-left: auto;
     margin-right: auto
 }
+.user{
+  padding-left: 8%;
+}
+.selectedUser{
+  margin: .0rem .0rem;
+}
 .searchButton{
   width: 190px;
 }
