@@ -172,7 +172,7 @@ const AprovarList = () => {
               className="searchButton btn btn-outline-secondary"
               onClick={handleClick}
             >
-              {filterName ? filterName : "Выберите фильтер"}
+              {filterName ? filterName : "Выберите фильтр"}
             </button>
             <Menu
               id="basic-menu"
