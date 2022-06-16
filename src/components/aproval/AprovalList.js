@@ -255,7 +255,7 @@ const AprovarList = () => {
                     <TableCell>{row.categoryName}</TableCell>
                     <TableCell>{row.operationTypeName}</TableCell>
                     <TableCell>{row.roomNumber}</TableCell>
-                    <TableCell component="th" scope="row">{row.isAprove === true ? "Одобрено" : "Не одобренно"}</TableCell>
+                    <TableCell component="th" scope="row">{row.isAprove === true ? "Одобрено" : "Не одобрено"}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
