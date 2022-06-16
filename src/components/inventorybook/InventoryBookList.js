@@ -394,9 +394,22 @@ const InventoryBookeList = () => {
               Редактировать
             </Link> 
             }
-              <button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+             {isAllAprove.isAprove == false && currentInventoryBooke.operationTypeName === "Списание" &&
+              <Link
+              to={"/inventorybook/" + currentInventoryBooke.id}
+              className="m-3 btn btn-outline-secondary"
+            >
+              Редактировать
+            </Link> 
+            }
+              {isAllAprove.isAprove == true && currentInventoryBooke.operationTypeName === "Списание" &&
+               (<button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
                 Удалить
-              </button>
+              </button>)}
+              {isAllAprove.isAprove == false && currentInventoryBooke.operationTypeName === "Учет" &&
+               (<button className="m-3 btn btn-outline-secondary" onClick={deleteInventoryBooke}>
+                Удалить
+              </button>)}
             </div>)}
           </div>
         ) : (
