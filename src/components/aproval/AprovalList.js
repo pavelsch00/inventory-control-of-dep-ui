@@ -294,7 +294,7 @@ const AprovarList = () => {
               <label>
                 <strong>Сотрудник:</strong>
               </label>{" "}
-              {currentUser.name} {currentUser.surname} {currentUser.lastName} 
+              {currentUser.surname} {currentUser.name} {currentUser.lastName} 
             </div>    
             {!showMaterialPersonBoard && !currentAprovar.isAprove && (
             <div>
