@@ -128,7 +128,7 @@ const AddInventoryBook = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="materialvalueId" >Материальная ценность</label>
+              <label htmlFor="materialvalueId" >Инвентарная книга</label>
               <Dropdown onSelect={(e) => setMaterialValue(e) }  >
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
                 {selectedMaterialValue?.name}
