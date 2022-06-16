@@ -332,7 +332,13 @@ const InventoryBookeList = () => {
             className="m-3 btn btn-outline-secondary" >Добавить  
           </Link>
         }
-        {showPurchaseDepartmentBoard || showMaterialPersonBoard && 
+        {showPurchaseDepartmentBoard && 
+          <button className="m-3 btn btn-outline-secondary" onClick={pdfCreatorHandle}>
+            Сгенерировать инвентаризационную опись
+          </button>
+          }
+
+        {showMaterialPersonBoard && 
           <button className="m-3 btn btn-outline-secondary" onClick={pdfCreatorHandle}>
             Сгенерировать инвентаризационную опись
           </button>

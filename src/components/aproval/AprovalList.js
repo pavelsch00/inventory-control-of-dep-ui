@@ -163,7 +163,7 @@ const AprovarList = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Поиск по названию"
+            placeholder="Выберите фильтр и введите данные для поиска"
             value={searchId}
             onChange={onChangeSearchName}
           />
