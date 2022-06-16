@@ -203,7 +203,7 @@ const AddUser = () => {
             <div className="form-group">
               <label htmlFor="password">Пароль</label>
               <Input
-                type="text"
+                type="password"
                 className="form-control"
                 name="password"
                 value={User.password}
