@@ -113,7 +113,7 @@ const AddInventoryBook = () => {
     <div>
       { selectedMaterialValue && selectedOperationtype && currentUser ? (
         <div className="edit-form">
-          <h4>Материальная ценность</h4>
+          <h4>Инвентарная книга</h4>
           <Form ref={form} onSubmit={saveInventoryBook}>
           <div className="form-group">
               <label htmlFor="factoryNumber">Сотрудник</label>
@@ -128,7 +128,7 @@ const AddInventoryBook = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="materialvalueId" >Инвентарная книга</label>
+              <label htmlFor="materialvalueId" >Материальная ценность</label>
               <Dropdown onSelect={(e) => setMaterialValue(e) }  >
                 <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="form-control">
                 {selectedMaterialValue?.name}
